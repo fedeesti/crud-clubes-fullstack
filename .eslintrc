@@ -1,6 +1,10 @@
 {
+  "env": {
+    "jest/globals": true
+  },
   "parser": "@typescript-eslint/parser",
   "extends": ["plugin:@typescript-eslint/recommended"],
+  "plugins": ["jest"],
   "parserOptions": { "ecmaVersion": 2018, "sourceType": "module" },
   "rules": {}
 }
