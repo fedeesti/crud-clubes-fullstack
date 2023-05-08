@@ -1,36 +1,50 @@
-import request from 'supertest';
-import { app } from '../app';
+import request, { SuperTest, Test } from 'supertest';
+import e from 'express';
+import { Server } from 'http';
+import { createApp } from '../app';
 
-const api = request(app);
+let app: e.Express;
+let server: Server;
+let api: SuperTest<Test>;
+
+beforeEach(() => {
+  app = createApp();
+  server = app.listen(9000);
+  api = request(app);
+});
+
+afterEach(() => {
+  server.close();
+});
 
 describe('GET /teams', () => {
-  test('Teams are returned as json', async () => {
-    const res = await api.get('/api/v1/teams');
+  test('should respond with a 200 status code and specify json as the content type in the http header', async () => {
+    const { statusCode, headers } = await api.get('/api/v1/teams');
 
-    expect(res.status).toEqual(200);
-    expect(res.headers['content-type']).toMatch(/application\/json/);
+    expect(statusCode).toEqual(200);
+    expect(headers['content-type']).toMatch(/application\/json/);
   });
 });
 
 describe('GET /teams/:id', () => {
-  test('Team is returned as json', async () => {
-    const res = await api.get('/api/v1/teams/64');
+  test('should respond with a 200 status code and json object that contains the team data', async () => {
+    const { statusCode, headers } = await api.get('/api/v1/teams/64');
 
-    expect(res.status).toEqual(200);
-    expect(res.headers['content-type']).toMatch(/application\/json/);
+    expect(statusCode).toEqual(200);
+    expect(headers['content-type']).toMatch(/application\/json/);
   });
 
-  test('Id does not match a team', async () => {
-    const res = await api.get('/api/v1/teams/-1');
+  test('should respond with a 404 status code and show the message Team not found', async () => {
+    const { statusCode, body } = await api.get('/api/v1/teams/-1');
 
-    expect(res.status).toEqual(404);
-    expect(res.body.message).toBe('Team not found');
+    expect(statusCode).toEqual(404);
+    expect(body.message).toBe('Team not found');
   });
 
-  test('Get incorrect ID', async () => {
-    const res = await api.get('/api/v1/teams/asd');
+  test('should respond with a 400 status code and show the message Bad Request', async () => {
+    const { statusCode, body } = await api.get('/api/v1/teams/asd');
 
-    expect(res.status).toEqual(400);
-    expect(res.body.message).toBe('Bad Request');
+    expect(statusCode).toEqual(400);
+    expect(body.message).toBe('Bad Request');
   });
 });
