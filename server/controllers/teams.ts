@@ -35,3 +35,19 @@ export async function getTeamById(req: Request, res: Response) {
     });
   }
 }
+
+export async function deleteTeamById(req: Request, res: Response) {
+  const id = Number(req.params.id);
+
+  if (!id) return res.status(400).json({ message: 'Bad Request' });
+
+  try {
+    const teamDelete = await service.deleteTeam(id);
+
+    return res.status(200).json(teamDelete);
+  } catch (err) {
+    return res.status(404).json({
+      message: 'Team not found',
+    });
+  }
+}
