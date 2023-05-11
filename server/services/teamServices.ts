@@ -21,6 +21,13 @@ export default class TeamServices {
     return team;
   }
 
+  async createTeam(teamData: Team) {
+    const newTeam = { ...teamData };
+    this.teams.push(newTeam);
+
+    return 'The team has been created successfully';
+  }
+
   async deleteTeam(id: number) {
     const index = this.teams.findIndex((team) => team.id === id);
 

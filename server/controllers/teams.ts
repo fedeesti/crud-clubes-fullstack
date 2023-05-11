@@ -27,6 +27,16 @@ export async function getTeamById(req: Request, res: Response, next: NextFunctio
   }
 }
 
+export async function createTeam(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const newTeam = await service.createTeam(req.body);
+
+    res.status(201).json(newTeam);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function deleteTeamById(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const id = Number(req.params.id);

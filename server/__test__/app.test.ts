@@ -74,3 +74,13 @@ describe('DELETE /teams/:id', () => {
     expect(body).toBe('the team with ID: 64 has been removed');
   });
 });
+
+describe('POST /teams', () => {
+  test('should store a team with a 201 status code and the message that has been created successfully', async () => {
+    const team = { name: 'AC Milan' };
+
+    const res = await api.post('/api/v1/teams').send(team).set('Accept', 'application/json').expect(201);
+
+    expect(res.body).toEqual('The team has been created successfully');
+  });
+});
