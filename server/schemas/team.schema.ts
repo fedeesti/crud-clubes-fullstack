@@ -9,3 +9,45 @@ export const idSchema: Schema = {
     },
   },
 };
+
+export const requiredSchema: Schema = {
+  id: {
+    exists: {
+      errorMessage: 'ID is required',
+    },
+  },
+  'area.id': {
+    exists: {
+      errorMessage: 'Country ID is required',
+    },
+  },
+  'area.name': {
+    exists: {
+      errorMessage: 'Country is required',
+    },
+  },
+  name: {
+    exists: {
+      errorMessage: 'Name is required',
+      options: { checkFalsy: true },
+    },
+  },
+  shortName: {
+    exists: {
+      errorMessage: 'shortName is required',
+      options: { checkFalsy: true },
+    },
+  },
+  crestUrl: {
+    exists: {
+      errorMessage: 'Image is required',
+      options: { checkFalsy: true },
+    },
+  },
+  clubColors: {
+    exists: {
+      errorMessage: 'Team colors is required',
+      options: { checkFalsy: true },
+    },
+  },
+};
