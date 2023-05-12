@@ -6,6 +6,7 @@ export default class ValidationError extends CustomError {
 
   constructor(errors: FieldValidationError[]) {
     super(400, 'Bad Request');
+    console.log(errors);
     this.errorData = errors.map((err) => {
       return { field: err.path, message: err.msg };
     });
