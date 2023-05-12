@@ -30,7 +30,7 @@ describe('GET /teams', () => {
 
 describe('GET /teams/:id', () => {
   test('should respond with a 404 status code and show the message Team not found', async () => {
-    const { statusCode, body } = await api.get('/api/v1/teams/-1');
+    const { statusCode, body } = await api.get('/api/v1/teams/99999999999');
 
     expect(statusCode).toEqual(404);
     expect(body.message).toBe('Team not found');
@@ -41,6 +41,8 @@ describe('GET /teams/:id', () => {
 
     expect(statusCode).toEqual(400);
     expect(body.message).toBe('Bad Request');
+    expect(body.data[0].field).toBe('id');
+    expect(body.data[0].message).toBe('ID is wrong, its must be a number');
   });
 
   test('should respond with a 200 status code and json object that contains the team data', async () => {
@@ -60,9 +62,11 @@ describe('DELETE /teams/:id', () => {
 
     expect(statusCode).toEqual(400);
     expect(body.message).toBe('Bad Request');
+    expect(body.data[0].field).toBe('id');
+    expect(body.data[0].message).toBe('ID is wrong, its must be a number');
   });
   test('should respond with a 404 status code and show the message Team not found', async () => {
-    const { statusCode, body } = await api.delete('/api/v1/teams/-1');
+    const { statusCode, body } = await api.delete('/api/v1/teams/99999999999');
 
     expect(statusCode).toEqual(404);
     expect(body.message).toBe('Team not found');
