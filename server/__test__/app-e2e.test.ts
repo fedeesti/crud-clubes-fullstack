@@ -58,6 +58,54 @@ describe('Teams Service', () => {
     });
   });
 
+  describe('UPDATE by ID', () => {
+    test('should respond with a 400 status code and show the message Bad Request', async () => {
+      const errorsData = [{ field: 'id', message: 'ID is wrong, its must be a number' }];
+
+      const { statusCode, body } = await api.put('/api/v1/teams/asd');
+
+      expect(statusCode).toEqual(400);
+      expect(body.message).toBe('Bad Request');
+      expect(body.data).toEqual(expect.arrayContaining(errorsData));
+    });
+    test('should respond with a 404 status code and show the message Team not found', async () => {
+      const { statusCode, body } = await api.put('/api/v1/teams/99999999999');
+
+      expect(statusCode).toEqual(404);
+      expect(body.message).toBe('Team not found');
+    });
+    // beforeEach(async () => {
+    //   const addTeam = {
+    //     area: {
+    //       name: 'Italy',
+    //     },
+    //     name: 'AC Milán',
+    //     shortName: 'Milán',
+    //     tla: 'MIL',
+    //     crestUrl: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Leeds_United.svg',
+    //     clubColors: 'Red / Black',
+    //   };
+
+    //   await api.post('/api/v1/teams').send(addTeam).set('Accept', 'application/json');
+    // });
+
+    test('when the team updated correctly, should return a message that it has updated successfully', async () => {
+      const fieldsToUpdate = {
+        address: 'Meazza Road_Milan L4 OTH',
+        phone: '+44 (0871) 9841955',
+        website: 'http://www.acmilan.com',
+        email: 'acmilan@contac.com',
+        founded: 1905,
+        venue: 'San Siro',
+      };
+
+      const { statusCode, body } = await api.put('/api/v1/teams/64').send(fieldsToUpdate);
+
+      expect(statusCode).toEqual(200);
+      expect(body).toBe('the team with ID: 64 has been updated');
+    });
+  });
+
   describe('DELETE by ID', () => {
     test('should respond with a 400 status code and show the message Bad Request', async () => {
       const errorsData = [{ field: 'id', message: 'ID is wrong, its must be a number' }];

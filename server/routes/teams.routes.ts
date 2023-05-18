@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { checkSchema } from 'express-validator';
-import { createTeam, deleteTeamById, getTeamById, getTeams } from '../controllers/teams';
+import { createTeam, deleteTeamById, getTeamById, getTeams, updateTeamById } from '../controllers/teams';
 import { idSchema, createTeamSchema } from '../schemas/team.schema';
 import { validatorHandler } from '../middlewares/validator.handler';
 
@@ -11,6 +11,7 @@ router.route('/').get(getTeams).post(checkSchema(createTeamSchema), validatorHan
 router
   .route('/:id')
   .get(checkSchema(idSchema), validatorHandler, getTeamById)
+  .put(checkSchema(idSchema), validatorHandler, updateTeamById)
   .delete(checkSchema(idSchema), validatorHandler, deleteTeamById);
 
 export default router;
