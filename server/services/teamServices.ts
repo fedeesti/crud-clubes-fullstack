@@ -29,6 +29,17 @@ export default class TeamServices {
     return 'The team has been created successfully';
   }
 
+  async updateTeam(id: number, fieldsToUpdate: Partial<Team>) {
+    const index = this.teams.findIndex((team) => team.id === id);
+
+    if (index === -1) throw new CustomError(404, 'Team not found');
+
+    const team = this.teams[index];
+    this.teams[index] = { ...team, ...fieldsToUpdate };
+
+    return `the team with ID: ${id} has been updated`;
+  }
+
   async deleteTeam(id: number) {
     const index = this.teams.findIndex((team) => team.id === id);
 
