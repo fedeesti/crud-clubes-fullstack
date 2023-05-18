@@ -1,6 +1,7 @@
 import teams from '../../data/equipos.db.json';
-import { Team } from '../types/team';
+import { CreateTeamResponse, Team } from '../types/team';
 import CustomError from '../models/customError';
+import { mapPostResponseToTeam } from '../models/team.mapper';
 
 export default class TeamServices {
   teams: Team[];
@@ -21,8 +22,8 @@ export default class TeamServices {
     return team;
   }
 
-  async createTeam(teamData: Team) {
-    const newTeam = { ...teamData };
+  async createTeam(teamData: CreateTeamResponse) {
+    const newTeam = mapPostResponseToTeam(teamData);
     this.teams.push(newTeam);
 
     return 'The team has been created successfully';

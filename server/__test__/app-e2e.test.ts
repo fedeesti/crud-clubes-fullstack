@@ -84,11 +84,9 @@ describe('Teams Service', () => {
 
   describe('POST /teams', () => {
     describe('Store a team successfully', () => {
-      test('should respond with a 201 status code and message that has been created', async () => {
+      test('when posted team with all fields, should respond with a message that has been created', async () => {
         const team = {
-          id: 1,
           area: {
-            id: 2002,
             name: 'Italy',
           },
           name: 'AC Milán',
@@ -98,11 +96,26 @@ describe('Teams Service', () => {
           tla: 'MIL',
           phone: '+44 (0871) 9841955',
           website: 'http://www.acmilan.com',
-          email: null,
+          email: 'acmilan@contac.com',
           founded: 1905,
           clubColors: 'Red / Black',
           venue: 'San Siro',
-          lastUpdated: '2020-05-14T02:41:41Z',
+        };
+
+        const { body } = await api.post('/api/v1/teams').send(team).set('Accept', 'application/json').expect(201);
+
+        expect(body).toEqual('The team has been created successfully');
+      });
+      test('when posted team with the required fields, should respond with a message that has been created', async () => {
+        const team = {
+          area: {
+            name: 'Italy',
+          },
+          name: '  AC Milán  ',
+          shortName: '  Milán  ',
+          tla: '  mil  ',
+          crestUrl: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Leeds_United.svg',
+          clubColors: '  Red / Black  ',
         };
 
         const { body } = await api.post('/api/v1/teams').send(team).set('Accept', 'application/json').expect(201);
