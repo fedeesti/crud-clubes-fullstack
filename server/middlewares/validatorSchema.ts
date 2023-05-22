@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Result, validationResult } from 'express-validator';
 import ValidationError from '../models/validationError';
 
-export function validatorHandler(req: Request, _res: Response, next: NextFunction) {
+export function validatorSchema(req: Request, _res: Response, next: NextFunction) {
   try {
     const result: Result = validationResult(req);
     if (!result.isEmpty()) {

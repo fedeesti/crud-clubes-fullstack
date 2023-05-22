@@ -1,15 +1,5 @@
 import { Schema } from 'express-validator';
 
-export const idSchema: Schema = {
-  id: {
-    in: ['params'],
-    isNumeric: {
-      options: { no_symbols: true },
-      errorMessage: 'ID is wrong, its must be a number',
-    },
-  },
-};
-
 export const createTeamSchema: Schema = {
   'area.name': {
     trim: true,

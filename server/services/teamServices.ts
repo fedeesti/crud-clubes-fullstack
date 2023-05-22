@@ -1,6 +1,5 @@
 import teams from '../../data/equipos.db.json';
 import { CreateTeamResponse, Team } from '../types/team';
-import CustomError from '../models/customError';
 import { mapPostResponseToTeam } from '../models/team.mapper';
 
 export default class TeamServices {
@@ -17,8 +16,6 @@ export default class TeamServices {
   async findTeam(id: number) {
     const team = this.teams.find((team) => team.id === id);
 
-    if (!team) throw new CustomError(404, 'Team not found');
-
     return team;
   }
 
@@ -32,8 +29,6 @@ export default class TeamServices {
   async updateTeam(id: number, fieldsToUpdate: Partial<Team>) {
     const index = this.teams.findIndex((team) => team.id === id);
 
-    if (index === -1) throw new CustomError(404, 'Team not found');
-
     const team = this.teams[index];
     this.teams[index] = { ...team, ...fieldsToUpdate };
 
@@ -42,8 +37,6 @@ export default class TeamServices {
 
   async deleteTeam(id: number) {
     const index = this.teams.findIndex((team) => team.id === id);
-
-    if (index === -1) throw new CustomError(404, 'Team not found');
 
     this.teams.splice(index, 1);
 
