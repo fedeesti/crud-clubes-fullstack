@@ -28,9 +28,10 @@ export default class TeamServices {
 
   async updateTeam(id: number, fieldsToUpdate: Partial<Team>) {
     const index = this.teams.findIndex((team) => team.id === id);
-
     const team = this.teams[index];
-    this.teams[index] = { ...team, ...fieldsToUpdate };
+
+    const updateTeam = mapPostResponseToTeam({ ...team, ...fieldsToUpdate });
+    this.teams[index] = updateTeam;
 
     return `the team with ID: ${id} has been updated`;
   }

@@ -20,6 +20,7 @@ interface Area {
   name: string;
 }
 export interface CreateTeamResponse {
+  id?: number;
   area: Omit<Area, 'id'>;
   name: string;
   shortName: string;
