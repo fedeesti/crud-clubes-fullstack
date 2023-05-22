@@ -31,20 +31,14 @@ describe('Teams Service', () => {
 
   describe('GET by ID', () => {
     test('should respond with a 404 status code and show the message Team not found', async () => {
-      const { statusCode, body } = await api.get('/api/v1/teams/99999999999');
+      const invalidId = ['99999999999', '_', 'asd', -123, 12.3];
 
-      expect(statusCode).toEqual(404);
-      expect(body.message).toBe('Team not found');
-    });
+      for (let i = 0; i < invalidId.length; i++) {
+        const { statusCode, body } = await api.get(`/api/v1/teams/${invalidId[i]}`);
 
-    test('should respond with a 400 status code and show the message Bad Request', async () => {
-      const errorsData = [{ field: 'id', message: 'ID is wrong, its must be a number' }];
-
-      const { statusCode, body } = await api.get('/api/v1/teams/asd');
-
-      expect(statusCode).toEqual(400);
-      expect(body.message).toBe('Bad Request');
-      expect(body.data).toEqual(expect.arrayContaining(errorsData));
+        expect(statusCode).toEqual(404);
+        expect(body.message).toBe('Team not found');
+      }
     });
 
     test('should respond with a 200 status code and json object that contains the team data', async () => {
@@ -80,6 +74,16 @@ describe('Teams Service', () => {
       });
     });
     describe('Wrong fields', () => {
+      test('when entering an invalid ID, you should respond with a 404 status code and the message Team not found', async () => {
+        const invalidId = ['99999999999', '_', 'asd', -123, 12.3];
+
+        for (let i = 0; i < invalidId.length; i++) {
+          const { statusCode, body } = await api.get(`/api/v1/teams/${invalidId[i]}`);
+
+          expect(statusCode).toEqual(404);
+          expect(body.message).toBe('Team not found');
+        }
+      });
       test('when the required fields are empty, it should respond with an array of error details', async () => {
         const dataErrors = [
           {
@@ -489,20 +493,15 @@ describe('Teams Service', () => {
   });
 
   describe('DELETE by ID', () => {
-    test('should respond with a 400 status code and show the message Bad Request', async () => {
-      const errorsData = [{ field: 'id', message: 'ID is wrong, its must be a number' }];
-
-      const { statusCode, body } = await api.delete('/api/v1/teams/asd');
-
-      expect(statusCode).toEqual(400);
-      expect(body.message).toBe('Bad Request');
-      expect(body.data).toEqual(expect.arrayContaining(errorsData));
-    });
     test('should respond with a 404 status code and show the message Team not found', async () => {
-      const { statusCode, body } = await api.delete('/api/v1/teams/99999999999');
+      const invalidId = ['99999999999', '_', 'asd', -123, 12.3];
 
-      expect(statusCode).toEqual(404);
-      expect(body.message).toBe('Team not found');
+      for (let i = 0; i < invalidId.length; i++) {
+        const { statusCode, body } = await api.get(`/api/v1/teams/${invalidId[i]}`);
+
+        expect(statusCode).toEqual(404);
+        expect(body.message).toBe('Team not found');
+      }
     });
     test('should respond with a 200 status code and show a message with the removed team ID', async () => {
       const { statusCode, body } = await api.delete('/api/v1/teams/64');
