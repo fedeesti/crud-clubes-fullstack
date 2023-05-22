@@ -72,6 +72,21 @@ describe('Teams Service', () => {
         expect(statusCode).toEqual(200);
         expect(body).toBe('the team with ID: 64 has been updated');
       });
+      test('when you update the country, the country id is modified next to the date', async () => {
+        const updateCountry = {
+          area: {
+            name: 'Italy',
+          },
+        };
+
+        await api.put('/api/v1/teams/64').send(updateCountry).set('Accept', 'application/json');
+
+        const { body } = await api.get('/api/v1/teams/64');
+
+        expect(body.area.id).not.toEqual(2072);
+        expect(body.area.name).toEqual('Italy');
+        expect(body.lastUpdated).not.toEqual('2020-05-14T02:41:46Z');
+      });
     });
     describe('Wrong fields', () => {
       test('when entering an invalid ID, you should respond with a 404 status code and the message Team not found', async () => {
