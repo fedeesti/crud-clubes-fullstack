@@ -6,6 +6,13 @@ export default {
       fontFamily: {
         poppins: ['Poppins', 'system-ui', 'sans-serif'],
       },
+      backgroundImage: {
+        wallpaper: "url('./src/img/adrien-olichon.jpg')",
+      },
+      colors: {
+        'cool-grey': '#819dad',
+        gold: '#896e36',
+      },
     },
   },
   plugins: [],
