@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Team } from '../types';
+import { useAxiosFetch } from '../hooks/useAxiosFetch';
 
 type TeamPreview = Pick<Team, 'name' | 'shortName' | 'area' | 'id' | 'crestUrl'>;
 
-export function TeamsTable({ teams }: { teams: Team[] }) {
+export function TeamsTable() {
+  const { teams }: { teams: Team[] } = useAxiosFetch();
+
   return (
     <section className="flex flex-col items-center justify-center min-h-screen py-10">
       <span data-test="amount-of-teams" className="text-gray-950 font-medium" data-cy="team-table-title">
