@@ -1,6 +1,7 @@
+import { Link } from 'react-router-dom';
 import { Team } from '../types';
 
-type TeamPreview = Pick<Team, 'name' | 'area' | 'id' | 'crestUrl'>;
+type TeamPreview = Pick<Team, 'name' | 'shortName' | 'area' | 'id' | 'crestUrl'>;
 
 export function TeamsTable({ teams }: { teams: Team[] }) {
   return (
@@ -35,7 +36,12 @@ export function TeamsTable({ teams }: { teams: Team[] }) {
                     return (
                       <tr className="odd:bg-black odd:bg-opacity-20" key={team.id}>
                         <td className="flex px-6 py-4 whitespace-nowrap">
-                          <img className="w-5" src={team.crestUrl} alt="" data-cy="team-row-img" />
+                          <img
+                            className="w-5"
+                            src={team.crestUrl}
+                            alt={`logo-${team.shortName}`}
+                            data-cy="team-row-img"
+                          />
                           <span className="ml-2 font-medium" data-cy="team-row-name">
                             {team.name}
                           </span>
@@ -44,15 +50,15 @@ export function TeamsTable({ teams }: { teams: Team[] }) {
                           {team.area.name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap" data-cy="team-row-actions">
-                          <a href="#" className="px-1">
+                          <Link to="#" className="px-1">
                             Watch
-                          </a>
-                          <a href="#" className="px-1">
+                          </Link>
+                          <Link to="#" className="px-1">
                             Edit
-                          </a>
-                          <a href="#" className="px-1">
+                          </Link>
+                          <Link to="#" className="px-1">
                             Delete
-                          </a>
+                          </Link>
                         </td>
                       </tr>
                     );

@@ -1,13 +1,14 @@
+import { Link } from 'react-router-dom';
 import logoSvg from '../img/soccer-svgrepo-com.svg';
 
 export function Navbar() {
   return (
     <nav className="border-gray-200 bg-gray-900 w-full fixed">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="/" className="flex items-center" id="nav-crud-logo">
+        <Link to="/" className="flex items-center" id="nav-crud-logo">
           <img src={logoSvg} className="h-8 mr-2" alt="CRUD-Clubes Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">CRUD-Clubes</span>
-        </a>
+        </Link>
         <div className="flex md:order-2" id="nav-search-team">
           <button
             type="button"
@@ -104,21 +105,21 @@ export function Navbar() {
           </div>
           <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 bg-gray-900">
             <li>
-              <a
-                href="#"
+              <Link
+                to="/"
                 className="block py-2 pl-3 pr-4 text-white bg-sky-300 rounded md:bg-transparent md:text-sky-200 md:p-0"
                 aria-current="page"
               >
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
+              <Link
+                to="#"
                 className="block py-2 pl-3 pr-4 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-teal-200 md:p-0 md:dark:hover:text-blue-500"
               >
                 Create team
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
