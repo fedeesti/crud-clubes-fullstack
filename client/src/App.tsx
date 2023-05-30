@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { TeamsTable } from './components/TeamsTable';
 import { getAllTeams } from './services/api';
@@ -21,21 +22,17 @@ function App() {
 
   return (
     <main>
-      <Navbar />
-      <header className="pt-24 text-center">
-        <h1 className="text-gray-800 text-5xl font-bold">CRUD-Clubes</h1>
-      </header>
-      <TeamsTable teams={teams} />
+      <Router>
+        <Navbar />
+        <header className="pt-24 text-center">
+          <h1 className="text-gray-800 text-5xl font-bold">CRUD-Clubes</h1>
+        </header>
+        <Routes>
+          <Route path="/" element={<TeamsTable teams={teams} />} />
+        </Routes>
+      </Router>
     </main>
   );
 }
 
 export default App;
-
-/*
-CREAR LOS TEST PARA COMPLETAR EL TICKET
- OPCIONAL:
-  - Acomodar el useEffect
-  - types.d.ts se repite en fron y back, unificarlos
-  - Assets tiene img, cambiar el nombre
-*/
