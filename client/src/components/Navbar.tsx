@@ -5,7 +5,7 @@ export function Navbar() {
   return (
     <nav className="border-gray-200 bg-gray-900 w-full fixed">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <Link to="/" className="flex items-center" id="nav-crud-logo">
+        <Link to="/" className="flex items-center" data-cy="navbar-logo-container">
           <img src={logoSvg} className="h-8 mr-2" alt="CRUD-Clubes Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">CRUD-Clubes</span>
         </Link>
@@ -32,7 +32,7 @@ export function Navbar() {
             </svg>
             <span className="sr-only">Search</span>
           </button>
-          <div className="relative hidden md:block">
+          <div className="relative hidden md:block" data-cy="navbar-search">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
                 className="w-5 h-5 text-gray-500"
@@ -79,7 +79,7 @@ export function Navbar() {
             </svg>
           </button>
         </div>
-        <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="nav-search-menu">
+        <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1">
           <div className="relative mt-3 md:hidden">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
@@ -103,12 +103,16 @@ export function Navbar() {
               placeholder="Search team..."
             />
           </div>
-          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 bg-gray-900">
+          <ul
+            className="flex flex-col p-4 md:p-0 mt-4 font-medium border rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 bg-gray-900"
+            data-cy="navbar-menu"
+          >
             <li>
               <Link
                 to="/"
                 className="block py-2 pl-3 pr-4 text-white bg-sky-300 rounded md:bg-transparent md:text-sky-200 md:p-0"
                 aria-current="page"
+                data-cy="navbar-menu-home"
               >
                 Home
               </Link>
@@ -117,6 +121,7 @@ export function Navbar() {
               <Link
                 to="#"
                 className="block py-2 pl-3 pr-4 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-teal-200 md:p-0 md:dark:hover:text-blue-500"
+                data-cy="navbar-menu-create-team"
               >
                 Create team
               </Link>

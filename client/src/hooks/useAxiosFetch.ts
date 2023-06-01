@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
-import { getAllTeams } from '../services/api';
-import { Team } from '../types';
+import { getTeams } from '../services/api';
 
-export function useAxiosFetch() {
-  const [teams, setTeams] = useState<Team[]>([]);
+export function useAxiosFetch(url: string) {
+  const [teams, setTeams] = useState([]);
 
-  const fetchAllTeams = async () => {
+  const fetchData = async (): Promise<void> => {
     try {
-      const { data } = await getAllTeams();
+      const { data } = await getTeams(url);
       setTeams(data);
     } catch (err) {
       console.error(err);
@@ -15,7 +14,7 @@ export function useAxiosFetch() {
   };
 
   useEffect(() => {
-    fetchAllTeams();
+    fetchData();
   }, []);
 
   return { teams };
