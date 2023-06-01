@@ -1,0 +1,19 @@
+{
+  "id": 65,
+  "area": {
+    "id": 2072,
+    "name": "England"
+  },
+  "name": "Manchester City FC",
+  "shortName": "Man City",
+  "tla": "MCI",
+  "crestUrl": "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg",
+  "address": "SportCity Manchester M11 3FF",
+  "phone": "+44 (0870) 0621894",
+  "website": "https://www.mancity.com",
+  "email": "mancity@mancity.com",
+  "founded": 1880,
+  "clubColors": "Sky Blue / White",
+  "venue": "Etihad Stadium",
+  "lastUpdated": "2020-05-14T02:41:49Z"
+}
