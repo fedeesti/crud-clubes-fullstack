@@ -5,7 +5,7 @@ export default {
     extend: {
       fontFamily: {
         poppins: ['Poppins', 'system-ui', 'sans-serif'],
-        poppins: ['Manrope'],
+        manrope: ['Manrope'],
       },
       backgroundImage: {
         wallpaper: "url('./src/img/adrien-olichon.jpg')",

@@ -115,4 +115,81 @@ describe('Frontend management', () => {
       cy.get('h1').contains('CRUD-Clubes');
     });
   });
+  describe('Delete Team', () => {
+    beforeEach(() => {
+      cy.get('[data-cy="team-row-actions"]').as('Actions');
+      cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('getTeam');
+      cy.get('@Actions').find('a').eq(2).click();
+      cy.wait('@getTeam');
+    });
+    it('when clicking on delete, it should show a modal to confirm the action', () => {
+      cy.get('[data-cy="modal-container"]').as('Modal');
+      cy.get('[data-cy="modal-close"]').as('ModalClose');
+      cy.get('[data-cy="modal-img"]').as('ModalTeamImg');
+      cy.get('[data-cy="modal-information"]').as('ModalInformation');
+      cy.get('[data-cy="modal-btn-confirm"]').as('ModalBtnConfirm');
+      cy.get('[data-cy="modal-btn-cancel"]').as('ModalBtnCancel');
+
+      cy.url().should('include', '/teams/57/delete');
+      cy.get('@Modal').should('exist');
+      cy.get('@ModalClose').should('exist');
+      cy.get('@ModalTeamImg').should('exist').and('have.attr', 'alt', 'logo-Man City');
+      cy.get('@ModalInformation').contains('Are you sure you want to delete');
+      cy.get('@ModalBtnConfirm').contains("Yes, I'm sure");
+      cy.get('@ModalBtnCancel').contains('No, cancel');
+    });
+    it('when clicking outside the modal, should be closed and go to home page', () => {
+      cy.get('[data-cy="modal-container"]').as('Modal');
+
+      cy.url().should('include', '/teams/57/delete');
+      cy.get('@Modal').should('exist');
+
+      cy.intercept('GET', URL_API, { fixture: 'teams.json' }).as('getAllTeams');
+      cy.get('#popup-modal').click('top', { force: true });
+      cy.wait('@getAllTeams');
+
+      cy.url().should('not.include', '/teams/57/delete');
+      cy.get('h1').contains('CRUD-Clubes');
+      cy.get('@Modal').should('not.exist');
+    });
+    it('when clicking the modal close should be closed and go to home page', () => {
+      cy.get('[data-cy="modal-container"]').as('Modal');
+      cy.get('[data-cy="modal-close"]').as('ModalClose');
+
+      cy.url().should('include', '/teams/57/delete');
+      cy.get('@Modal').should('exist');
+
+      cy.intercept('GET', URL_API, { fixture: 'teams.json' }).as('getAllTeams');
+      cy.get('@ModalClose').click();
+      cy.wait('@getAllTeams');
+
+      cy.url().should('not.include', '/teams/57/delete');
+      cy.get('h1').contains('CRUD-Clubes');
+      cy.get('@Modal').should('not.exist');
+    });
+    it('when clicking the button cancel should be closed the modal and go to home page', () => {
+      cy.get('[data-cy="modal-container"]').as('Modal');
+      cy.get('[data-cy="modal-btn-cancel"]').as('ModalBtnCancel');
+
+      cy.url().should('include', '/teams/57/delete');
+      cy.get('@Modal').should('exist');
+
+      cy.intercept('GET', URL_API, { fixture: 'teams.json' }).as('getAllTeams');
+      cy.get('@ModalBtnCancel').click();
+      cy.wait('@getAllTeams');
+
+      cy.url().should('not.include', '/teams/57/delete');
+      cy.get('h1').contains('CRUD-Clubes');
+      cy.get('@Modal').should('not.exist');
+    });
+    it('when confirming the removal successfully should go to the home page ', () => {
+      cy.get('[data-cy="modal-container"]').as('Modal');
+      cy.get('[data-cy="modal-btn-confirm"]').as('ModalBtnConfirm');
+
+      cy.intercept('GET', URL_API, { fixture: 'teams-two-lenght.json' }).as('getTwoTeams');
+      cy.get('@ModalBtnConfirm').click();
+      cy.wait('@getTwoTeams');
+      cy.get('[data-cy="teams-table-body"]').find('tr').should('have.length', 2);
+    });
+  });
 });
