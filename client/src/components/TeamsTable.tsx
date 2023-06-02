@@ -67,7 +67,7 @@ export function TeamsTable() {
                             <Link to="#" className="px-1">
                               Edit
                             </Link>
-                            <Link to="#" className="px-1">
+                            <Link to={`/teams/${team.id}/delete`} className="px-1">
                               Delete
                             </Link>
                           </td>
