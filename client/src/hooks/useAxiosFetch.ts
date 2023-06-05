@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { getTeams } from '../services/api';
+import { getTeamsRequest } from '../services/api';
 
-export function useAxiosFetch(url: string) {
+export function useAxiosFetch() {
   const [teams, setTeams] = useState([]);
 
   const fetchData = async (): Promise<void> => {
     try {
-      const { data } = await getTeams(url);
+      const { data } = await getTeamsRequest();
       setTeams(data);
     } catch (err) {
       console.error(err);

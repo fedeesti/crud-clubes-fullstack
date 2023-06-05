@@ -19,10 +19,17 @@ export default {
         'auto-fit': 'repeat(auto-fit, 1fr)',
       },
       gridTemplateColumns: {
-        'team-view': 'minmax(150px, 21%) 1fr',
+        'sm-minmax': 'minmax(160px, 21%) 1fr',
+        'md-minmax': 'minmax(180px, 21%) 1fr',
       },
       boxShadow: {
         section: '20px 20px 60px #d9d5d5, -20px -20px 60px #ffffff',
+      },
+      translate: {
+        '50-negative': '-50%',
+      },
+      minWidth: {
+        sm: '320px',
       },
     },
   },

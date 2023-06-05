@@ -1,43 +1,28 @@
-import { useNavigate } from 'react-router-dom';
-import { deleteTeam } from '../services/api';
+import { deleteTeamRequest } from '../services/api';
 
-export function Modal({
-  logo,
-  name,
-  id,
-  onClose,
-}: {
-  logo: string | undefined;
-  name: string | undefined;
-  id: number | undefined;
-  onClose: () => void;
-}) {
-  const navigate = useNavigate();
-
-  const onDelete = (id: number | undefined) => {
-    deleteTeam(`/teams/${id}`);
-    navigate('/');
-  };
-
-  const closeModal = () => {
-    onClose();
-    navigate('/');
+export function Modal({ logo, name, id, onClose }: { logo: string; name: string; id: number; onClose: () => void }) {
+  const onDelete = (id: number) => {
+    deleteTeamRequest(id);
+    window.location.reload();
   };
 
   return (
     <div
       id="popup-modal"
-      className="z-50 w-full h-screen flex justify-center items-center p-4 overflow-x-hidden overflow-y-auto md:inset-0"
-      onClick={closeModal}
+      className="z-50 w-full h-screen absolute top-1/2 left-1/2 translate-x-50-negative translate-y-50-negative"
+      onClick={onClose}
     >
-      <div className="relative w-full max-w-md max-h-full" onClick={(e) => e.stopPropagation()}>
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700" data-cy="modal-container">
+      <div
+        className="fixed top-1/2 left-1/2 translate-x-50-negative translate-y-50-negative min-w-sm"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className=" bg-white rounded-lg shadow" data-cy="modal-container">
           <button
             type="button"
             className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
             data-modal-hide="popup-modal"
             data-cy="modal-close"
-            onClick={closeModal}
+            onClick={onClose}
           >
             <svg
               aria-hidden="true"
@@ -70,7 +55,7 @@ export function Modal({
             </button>
             <button
               data-modal-hide="popup-modal"
-              onClick={closeModal}
+              onClick={onClose}
               type="button"
               data-cy="modal-btn-cancel"
               className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"

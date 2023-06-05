@@ -1,11 +1,9 @@
-import { Link } from 'react-router-dom';
 import { Team } from '../types';
 import { useAxiosFetch } from '../hooks/useAxiosFetch';
-
-type TeamPreview = Pick<Team, 'name' | 'shortName' | 'area' | 'id' | 'crestUrl'>;
+import { TeamItem } from '../components/TeamItem';
 
 export function TeamsTable() {
-  const { teams }: { teams: Team[] } = useAxiosFetch('/teams/');
+  const { teams }: { teams: Team[] } = useAxiosFetch();
 
   return (
     <>
@@ -16,7 +14,7 @@ export function TeamsTable() {
         <span data-test="amount-of-teams" className="text-gray-950 font-medium" data-cy="team-table-title">
           There are {teams.length} teams
         </span>
-        <div className="flex flex-col mt-6">
+        <div className="flex flex-col mt-6 w-full md:w-min">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
               <div className="shadow overflow-hidden sm:rounded-lg">
@@ -43,35 +41,16 @@ export function TeamsTable() {
                     </tr>
                   </thead>
                   <tbody className="bg-gray-800" data-cy="teams-table-body">
-                    {teams.map((team: TeamPreview) => {
+                    {teams.map((team) => {
                       return (
-                        <tr className="odd:bg-black odd:bg-opacity-20" key={team.id}>
-                          <td className="flex px-6 py-4 whitespace-nowrap">
-                            <img
-                              className="w-5"
-                              src={team.crestUrl}
-                              alt={`logo-${team.shortName}`}
-                              data-cy="team-row-img"
-                            />
-                            <span className="ml-2 font-medium" data-cy="team-row-name">
-                              {team.name}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap" data-cy="team-row-country">
-                            {team.area.name}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap" data-cy="team-row-actions">
-                            <Link to={`/teams/${team.id}`} className="px-1">
-                              Watch
-                            </Link>
-                            <Link to="#" className="px-1">
-                              Edit
-                            </Link>
-                            <Link to={`/teams/${team.id}/delete`} className="px-1">
-                              Delete
-                            </Link>
-                          </td>
-                        </tr>
+                        <TeamItem
+                          key={team.id}
+                          id={team.id}
+                          logo={team.crestUrl}
+                          country={team.area.name}
+                          name={team.name}
+                          shortName={team.shortName}
+                        />
                       );
                     })}
                   </tbody>
