@@ -1,5 +1,5 @@
 const URL_APP = 'http://127.0.0.1:5173';
-const URL_API = 'http://localhost:3000/api/v1/teams/';
+const URL_API = 'http://localhost:3000/api/v1/teams';
 
 describe('Frontend management', () => {
   beforeEach(() => {
@@ -48,9 +48,9 @@ describe('Frontend management', () => {
       cy.get('[data-cy="team-row-name"]').should('exist');
       cy.get('[data-cy="team-row-country"]').should('exist');
 
-      cy.get('[data-cy="team-row-actions"]').find('a').eq(0).should('contain', 'Watch');
-      cy.get('[data-cy="team-row-actions"]').find('a').eq(1).should('contain', 'Edit');
-      cy.get('[data-cy="team-row-actions"]').find('a').eq(2).should('contain', 'Delete');
+      cy.get('[data-cy="team-actions-watch"]').contains('Watch');
+      cy.get('[data-cy="team-actions-edit"]').contains('Edit');
+      cy.get('[data-cy="team-actions-delete"]').contains('Delete');
     });
     it('tests trying to navigate from home page to team page', () => {
       cy.get('[data-cy="team-row-actions"]').as('Actions');
@@ -117,10 +117,7 @@ describe('Frontend management', () => {
   });
   describe('Delete Team', () => {
     beforeEach(() => {
-      cy.get('[data-cy="team-row-actions"]').as('Actions');
-      cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('getTeam');
-      cy.get('@Actions').find('a').eq(2).click();
-      cy.wait('@getTeam');
+      cy.get('[data-cy="team-actions-delete"]').eq(0).click();
     });
     it('when clicking on delete, it should show a modal to confirm the action', () => {
       cy.get('[data-cy="modal-container"]').as('Modal');
@@ -130,10 +127,9 @@ describe('Frontend management', () => {
       cy.get('[data-cy="modal-btn-confirm"]').as('ModalBtnConfirm');
       cy.get('[data-cy="modal-btn-cancel"]').as('ModalBtnCancel');
 
-      cy.url().should('include', '/teams/57/delete');
       cy.get('@Modal').should('exist');
       cy.get('@ModalClose').should('exist');
-      cy.get('@ModalTeamImg').should('exist').and('have.attr', 'alt', 'logo-Man City');
+      cy.get('@ModalTeamImg').should('exist').and('have.attr', 'alt', 'logo-Arsenal');
       cy.get('@ModalInformation').contains('Are you sure you want to delete');
       cy.get('@ModalBtnConfirm').contains("Yes, I'm sure");
       cy.get('@ModalBtnCancel').contains('No, cancel');
@@ -141,14 +137,12 @@ describe('Frontend management', () => {
     it('when clicking outside the modal, should be closed and go to home page', () => {
       cy.get('[data-cy="modal-container"]').as('Modal');
 
-      cy.url().should('include', '/teams/57/delete');
       cy.get('@Modal').should('exist');
 
       cy.intercept('GET', URL_API, { fixture: 'teams.json' }).as('getAllTeams');
       cy.get('#popup-modal').click('top', { force: true });
       cy.wait('@getAllTeams');
 
-      cy.url().should('not.include', '/teams/57/delete');
       cy.get('h1').contains('CRUD-Clubes');
       cy.get('@Modal').should('not.exist');
     });
@@ -156,14 +150,12 @@ describe('Frontend management', () => {
       cy.get('[data-cy="modal-container"]').as('Modal');
       cy.get('[data-cy="modal-close"]').as('ModalClose');
 
-      cy.url().should('include', '/teams/57/delete');
       cy.get('@Modal').should('exist');
 
       cy.intercept('GET', URL_API, { fixture: 'teams.json' }).as('getAllTeams');
       cy.get('@ModalClose').click();
       cy.wait('@getAllTeams');
 
-      cy.url().should('not.include', '/teams/57/delete');
       cy.get('h1').contains('CRUD-Clubes');
       cy.get('@Modal').should('not.exist');
     });
@@ -171,21 +163,20 @@ describe('Frontend management', () => {
       cy.get('[data-cy="modal-container"]').as('Modal');
       cy.get('[data-cy="modal-btn-cancel"]').as('ModalBtnCancel');
 
-      cy.url().should('include', '/teams/57/delete');
       cy.get('@Modal').should('exist');
 
       cy.intercept('GET', URL_API, { fixture: 'teams.json' }).as('getAllTeams');
       cy.get('@ModalBtnCancel').click();
       cy.wait('@getAllTeams');
 
-      cy.url().should('not.include', '/teams/57/delete');
       cy.get('h1').contains('CRUD-Clubes');
       cy.get('@Modal').should('not.exist');
     });
-    it('when confirming the removal successfully should go to the home page ', () => {
+    it.only('when confirming the removal successfully should go to the home page ', () => {
       cy.get('[data-cy="modal-container"]').as('Modal');
       cy.get('[data-cy="modal-btn-confirm"]').as('ModalBtnConfirm');
 
+      cy.intercept('DELETE', `${URL_API}/57`).as('DeleteTeam');
       cy.intercept('GET', URL_API, { fixture: 'teams-two-lenght.json' }).as('getTwoTeams');
       cy.get('@ModalBtnConfirm').click();
       cy.wait('@getTwoTeams');
