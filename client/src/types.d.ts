@@ -19,3 +19,18 @@ interface Area {
   id: number;
   name: string;
 }
+
+export interface FormValues {
+  name: string;
+  country: string;
+  shortName: string;
+  tla: string;
+  crestUrl: string;
+  clubColors: string;
+  address: string | null;
+  phone: string | null;
+  website: string | null;
+  email: string | null;
+  founded: number | null;
+  venue: string | null;
+}
