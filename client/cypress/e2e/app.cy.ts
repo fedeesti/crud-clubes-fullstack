@@ -172,7 +172,7 @@ describe('Frontend management', () => {
       cy.get('h1').contains('CRUD-Clubes');
       cy.get('@Modal').should('not.exist');
     });
-    it.only('when confirming the removal successfully should go to the home page ', () => {
+    it('when confirming the removal successfully should go to the home page ', () => {
       cy.get('[data-cy="modal-container"]').as('Modal');
       cy.get('[data-cy="modal-btn-confirm"]').as('ModalBtnConfirm');
 
@@ -181,6 +181,111 @@ describe('Frontend management', () => {
       cy.get('@ModalBtnConfirm').click();
       cy.wait('@getTwoTeams');
       cy.get('[data-cy="teams-table-body"]').find('tr').should('have.length', 2);
+    });
+  });
+  describe('Add a new team', () => {
+    beforeEach(() => {
+      cy.get('[data-cy="navbar-menu-create-team"]').click();
+    });
+    it('when clicking to create a team should be moved to the add a Team page and show the form', () => {
+      cy.url().should('include', '/teams/add');
+      cy.get('[data-cy="add-team-title"]').contains('Add a new team').as('addTeamTitle');
+      cy.get('[data-cy="team-form-container"]').should('exist').as('formContainer');
+
+      cy.get('[data-cy="form-team-name"]').should('exist').as('nameField');
+      cy.get('@nameField').find('label').contains('Team Name');
+      cy.get('@nameField').find('label > span').contains('*').and('have.class', 'text-red-800');
+      cy.get('@nameField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-short-name"]').should('exist').as('shortNameField');
+      cy.get('@shortNameField').find('label').contains('Short name');
+      cy.get('@shortNameField').find('label > span').contains('*').and('have.class', 'text-red-800');
+      cy.get('@shortNameField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-tla"]').should('exist').as('tlaField');
+      cy.get('@tlaField').find('label').contains('TLA');
+      cy.get('@tlaField').find('label > span').contains('*').and('have.class', 'text-red-800');
+      cy.get('@tlaField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-country"]').should('exist').as('countryField');
+      cy.get('@countryField').find('label').contains('Country');
+      cy.get('@countryField').find('label > span').contains('*').and('have.class', 'text-red-800');
+      cy.get('@countryField').find('select').should('be.visible');
+
+      cy.get('[data-cy="form-club-colors"]').as('clubColorsField');
+      cy.get('@clubColorsField').find('label').contains('Club Colors');
+      cy.get('@clubColorsField').find('label > span').contains('*').and('have.class', 'text-red-800');
+      cy.get('@clubColorsField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-venue"]').as('venueField');
+      cy.get('@venueField').find('label').contains('Stadium name');
+      cy.get('@venueField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-founded"]').as('foundedField');
+      cy.get('@foundedField').find('label').contains('Founded');
+      cy.get('@foundedField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-address"]').as('addressField');
+      cy.get('@addressField').find('label').contains('Address');
+      cy.get('@addressField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-phone"]').as('phoneField');
+      cy.get('@phoneField').find('label').contains('Phone');
+      cy.get('@phoneField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-email"]').as('emailField');
+      cy.get('@emailField').find('label').contains('Email');
+      cy.get('@emailField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-website"]').as('websiteField');
+      cy.get('@websiteField').find('label').contains('Website');
+      cy.get('@websiteField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-update-logo"]').as('logoField');
+      cy.get('@logoField').find('label').contains('Upload logo');
+      cy.get('@logoField').find('label > span').contains('*').and('have.class', 'text-red-800');
+      cy.get('@logoField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-btn-submit"]').contains('Add product').as('BtnSubmitForm');
+    });
+    it('when creating a team successfully should go to the home page', () => {
+      const team = {
+        area: {
+          name: 'Italy',
+        },
+        name: 'AC Milán',
+        crestUrl: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Leeds_United.svg',
+        address: 'Anfield Road Liverpool L4 OTH',
+        shortName: 'Milán',
+        tla: 'MIL',
+        phone: '+44 (0871) 9841955',
+        website: 'http://www.acmilan.com',
+        email: 'acmilan@contac.com',
+        founded: 1905,
+        clubColors: 'Red / Black',
+        venue: 'San Siro',
+      };
+
+      cy.get('[data-cy="form-team-name"]').type(team.name);
+      cy.get('[data-cy="form-short-name"]').find('input').type(team.shortName);
+      cy.get('[data-cy="form-tla"]').find('input').type(team.tla);
+      cy.get('[data-cy="form-country"]').find('select').select(team.area.name);
+      cy.get('[data-cy="form-club-colors"]').find('input').type(team.clubColors);
+      cy.get('[data-cy="form-venue"]').find('input').type(team.venue);
+      cy.get('[data-cy="form-founded"]').find('input').type(`${team.founded}`);
+      cy.get('[data-cy="form-address"]').find('input').type(team.address);
+      cy.get('[data-cy="form-phone"]').find('input').type(team.phone);
+      cy.get('[data-cy="form-email"]').find('input').type(team.email);
+      cy.get('[data-cy="form-website"]').find('input').type(team.website);
+      cy.get('[data-cy="form-update-logo"]').find('input').selectFile('cypress/fixtures/ac-milan.png', { force: true });
+
+      cy.intercept('POST', URL_API, { fixture: 'team-with-data.json' }).as('createATeam');
+      cy.intercept('GET', URL_API, { fixture: 'teams-four-lenght.json' }).as('getFourTeams');
+      cy.get('[data-cy="form-btn-submit"]').click();
+
+      cy.url().should('not.include', '/teams/add');
+      cy.get('h1').contains('CRUD-Clubes');
+      cy.get('[data-cy="teams-table-body"]').find('tr').should('have.length', 4);
     });
   });
 });
