@@ -14,11 +14,11 @@ export function TeamsTable() {
         <span data-test="amount-of-teams" className="text-gray-950 font-medium" data-cy="team-table-title">
           There are {teams.length} teams
         </span>
-        <div className="flex flex-col mt-6 w-full md:w-min">
+        <div className="flex flex-col mt-6 w-min">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
               <div className="shadow overflow-hidden sm:rounded-lg">
-                <table className="min-w-full text-sm text-gray-400" data-cy="teams-table">
+                <table className="min-w-full table-fixed text-sm text-gray-400" data-cy="teams-table">
                   <thead className="bg-gray-800 text-xs uppercase font-medium" data-cy="teams-table-header">
                     <tr>
                       <th scope="col" className="px-6 py-3 text-left tracking-wider" data-cy="teams-table-header-name">

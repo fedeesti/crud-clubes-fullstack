@@ -1,7 +1,8 @@
 import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { useNavigate } from 'react-router-dom';
+
 import { FormValues } from '../types';
 import { createTeamRequest } from '../services/api';
-import { useNavigate } from 'react-router-dom';
 
 export function TeamForm() {
   const navigate = useNavigate();
@@ -15,13 +16,12 @@ export function TeamForm() {
     phone: '',
     website: '',
     email: '',
-    founded: null,
+    founded: 0,
     clubColors: '',
     venue: '',
   };
 
   const onSubmit = (values: FormValues) => {
-    console.log(values);
     createTeamRequest(values);
     navigate('/');
   };
@@ -78,13 +78,13 @@ export function TeamForm() {
               <ErrorMessage name="tla" />
             </div>
             <div className="w-full" data-cy="form-country">
-              <label htmlFor="area.name" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
+              <label htmlFor="area[name]" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Country
                 <span className="ml-px text-red-800">*</span>
               </label>
               <Field
                 as="select"
-                name="area.name"
+                name="area[name]"
                 className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 required
               >
@@ -258,12 +258,12 @@ export function TeamForm() {
                 type="file"
                 name="crestUrl"
                 accept=".png, .jpg, .jpeg, .svg"
-                required
                 onChange={(e) => {
                   const files = e.target.files;
                   console.log(files);
-                  props.setFieldValue('crestUrl', files?.item(0)?.name);
+                  props.setFieldValue('crestUrl', URL.createObjectURL(files?.item(0) as Blob));
                 }}
+                required
               />
               <ErrorMessage name="crestUrl" />
             </div>
@@ -273,7 +273,7 @@ export function TeamForm() {
             className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gold rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
             data-cy="form-btn-submit"
           >
-            Add product
+            Add team
           </button>
         </Form>
       )}
