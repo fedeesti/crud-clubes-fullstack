@@ -246,7 +246,7 @@ describe('Frontend management', () => {
       cy.get('@logoField').find('label > span').contains('*').and('have.class', 'text-red-800');
       cy.get('@logoField').find('input').should('be.visible');
 
-      cy.get('[data-cy="form-btn-submit"]').contains('Add product').as('BtnSubmitForm');
+      cy.get('[data-cy="form-btn-submit"]').contains('Add team').as('BtnSubmitForm');
     });
     it('when creating a team successfully should go to the home page', () => {
       const team = {

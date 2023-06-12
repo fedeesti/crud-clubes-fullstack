@@ -19,7 +19,7 @@ export function TeamItem({
 
   return (
     <tr className="odd:bg-black odd:bg-opacity-20">
-      <td className="flex px-6 py-4 whitespace-nowrap">
+      <td className="flex px-6 py-4 whitespace-nowrap items-center">
         <img className="w-5" src={logo} alt={`logo-${shortName}`} data-cy="team-row-img" />
         <span className="ml-2 font-medium" data-cy="team-row-name">
           {name}
