@@ -1,33 +1,76 @@
+import { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { FormValues } from '../types';
-import { createTeamRequest } from '../services/api';
+import { createTeamRequest, deleteTeamRequest, getTeamRequest, updateTeamRequest } from '../services/api';
+
+const INITIAL_VALUES: FormValues = {
+  name: '',
+  area: { name: '' },
+  shortName: '',
+  tla: '',
+  crestUrl: '',
+  address: '',
+  phone: '',
+  website: '',
+  email: '',
+  founded: 0,
+  clubColors: '',
+  venue: '',
+};
 
 export function TeamForm() {
   const navigate = useNavigate();
-  const inititalValues: FormValues = {
-    country: '',
-    name: '',
-    shortName: '',
-    tla: '',
-    crestUrl: '',
-    address: '',
-    phone: '',
-    website: '',
-    email: '',
-    founded: 0,
-    clubColors: '',
-    venue: '',
+  const { id } = useParams();
+
+  const [initialValues, setInitialValues] = useState<FormValues>(INITIAL_VALUES);
+
+  const getTeam = async () => {
+    if (id) {
+      const { data } = await getTeamRequest(id);
+
+      const team = {
+        area: { name: data.area.name },
+        name: data.name,
+        shortName: data.shortName,
+        tla: data.tla,
+        crestUrl: data.crestUrl,
+        address: data.address,
+        phone: data.phone,
+        website: data.website,
+        email: data.email,
+        founded: data.founded,
+        clubColors: data.clubColors,
+        venue: data.venue,
+      };
+
+      setInitialValues(team);
+    }
   };
 
+  const onDelete = (id: number) => {
+    deleteTeamRequest(id);
+    navigate('/');
+  };
+
+  useEffect(() => {
+    getTeam();
+  }, []);
+
   const onSubmit = (values: FormValues) => {
-    createTeamRequest(values);
+    if (id) {
+      updateTeamRequest(id, values);
+    } else {
+      createTeamRequest(values);
+    }
+
+    setInitialValues(INITIAL_VALUES);
     navigate('/');
   };
 
   return (
-    <Formik initialValues={inititalValues} onSubmit={onSubmit}>
+    <Formik initialValues={initialValues} enableReinitialize={true} onSubmit={onSubmit}>
       {(props) => (
         <Form data-cy="team-form-container">
           <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -35,7 +78,7 @@ export function TeamForm() {
               {' '}
               <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Team Name
-                <span className="ml-px text-red-800">*</span>
+                {id ? '' : <span className="ml-px text-red-800">*</span>}
               </label>
               <Field
                 type="text"
@@ -50,7 +93,7 @@ export function TeamForm() {
             <div className="w-full" data-cy="form-short-name">
               <label htmlFor="shortName" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Short name
-                <span className="ml-px text-red-800">*</span>
+                {id ? '' : <span className="ml-px text-red-800">*</span>}
               </label>
               <Field
                 type="text"
@@ -65,7 +108,7 @@ export function TeamForm() {
             <div className="w-full" data-cy="form-tla">
               <label htmlFor="tla" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 TLA
-                <span className="ml-px text-red-800">*</span>
+                {id ? '' : <span className="ml-px text-red-800">*</span>}
               </label>
               <Field
                 type="text"
@@ -78,12 +121,13 @@ export function TeamForm() {
               <ErrorMessage name="tla" />
             </div>
             <div className="w-full" data-cy="form-country">
-              <label htmlFor="area[name]" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
+              <label htmlFor="area.name" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Country
-                <span className="ml-px text-red-800">*</span>
+                {id ? '' : <span className="ml-px text-red-800">*</span>}
               </label>
               <Field
                 as="select"
+                id="area.name"
                 name="area[name]"
                 className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 required
@@ -156,7 +200,7 @@ export function TeamForm() {
             <div className="w-full" data-cy="form-club-colors">
               <label htmlFor="clubColors" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Club Colors
-                <span className="ml-px text-red-800">*</span>
+                {id ? '' : <span className="ml-px text-red-800">*</span>}
               </label>
               <Field
                 type="text"
@@ -249,11 +293,10 @@ export function TeamForm() {
             <div className="sm:col-span-2" data-cy="form-update-logo">
               <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-white" htmlFor="crestUrl">
                 Upload logo
-                <span className="ml-px text-red-800">*</span>
+                {id ? '' : <span className="ml-px text-red-800">*</span>}
               </label>
               <input
                 className="block w-full text-sm text-gray-800 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 file:bg-gray-800 file:py-1 file:cursor-pointer file:text-white hover:file:bg-gray-700"
-                aria-describedby="crestUrl"
                 id="crestUrl"
                 type="file"
                 name="crestUrl"
@@ -263,18 +306,49 @@ export function TeamForm() {
                   console.log(files);
                   props.setFieldValue('crestUrl', URL.createObjectURL(files?.item(0) as Blob));
                 }}
-                required
               />
               <ErrorMessage name="crestUrl" />
             </div>
           </div>
-          <button
-            type="submit"
-            className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gold rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
-            data-cy="form-btn-submit"
-          >
-            Add team
-          </button>
+          {id ? (
+            <div className="flex items-center space-x-4 py-6">
+              <button
+                type="submit"
+                data-cy="form-btn-update"
+                className="text-white bg-gold hover:bg-opacity-80 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              >
+                Update team
+              </button>
+              <button
+                type="button"
+                data-cy="form-btn-delete"
+                onClick={() => onDelete(Number(id))}
+                className="text-red-600 inline-flex items-center bg-white hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              >
+                <svg
+                  className="w-5 h-5 mr-1 -ml-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+                Delete
+              </button>
+            </div>
+          ) : (
+            <button
+              type="submit"
+              className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gold rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-opacity-80"
+              data-cy="form-btn-submit"
+            >
+              Add team
+            </button>
+          )}
         </Form>
       )}
     </Formik>
