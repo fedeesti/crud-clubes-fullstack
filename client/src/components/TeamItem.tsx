@@ -32,7 +32,7 @@ export function TeamItem({
         <Link to={`/teams/${id}`} className="px-1" data-cy="team-actions-watch">
           Watch
         </Link>
-        <Link to="#" className="px-1" data-cy="team-actions-edit">
+        <Link to={`/teams/${id}/edit`} className="px-1" data-cy="team-actions-edit">
           Edit
         </Link>
         <button onClick={() => setIsOpen(true)} className="px-1" data-cy="team-actions-delete">

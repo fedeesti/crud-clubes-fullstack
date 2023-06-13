@@ -8,7 +8,7 @@ export default {
         manrope: ['Manrope'],
       },
       backgroundImage: {
-        wallpaper: "url('./src/img/adrien-olichon.jpg')",
+        wallpaper: "url('./src/img/app-wallpaper.jpg')",
         'banner-team': 'url(./src/img/stadium-banner.jpg)',
       },
       colors: {

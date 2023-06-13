@@ -288,4 +288,96 @@ describe('Frontend management', () => {
       cy.get('[data-cy="teams-table-body"]').find('tr').should('have.length', 4);
     });
   });
+  describe('Update team', () => {
+    it('when clicking to Edit should be moved to the Team update page and show the form', () => {
+      cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('GetTeam');
+      cy.get('[data-cy="team-actions-edit"]').eq(0).click();
+
+      cy.url().should('include', '/edit');
+      cy.get('[data-cy="add-team-title"]').contains('Update team');
+      cy.get('[data-cy="team-form-container"]').should('exist').as('formContainer');
+
+      cy.get('[data-cy="form-team-name"]').should('exist').as('nameField');
+      cy.get('@nameField').find('label').contains('Team Name');
+      cy.get('@nameField').find('label > span').should('not.exist');
+      cy.get('@nameField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-short-name"]').should('exist').as('shortNameField');
+      cy.get('@shortNameField').find('label').contains('Short name');
+      cy.get('@shortNameField').find('label > span').should('not.exist');
+      cy.get('@shortNameField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-tla"]').should('exist').as('tlaField');
+      cy.get('@tlaField').find('label').contains('TLA');
+      cy.get('@tlaField').find('label > span').should('not.exist');
+      cy.get('@tlaField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-country"]').should('exist').as('countryField');
+      cy.get('@countryField').find('label').contains('Country');
+      cy.get('@countryField').find('label > span').should('not.exist');
+      cy.get('@countryField').find('select').should('be.visible');
+
+      cy.get('[data-cy="form-club-colors"]').as('clubColorsField');
+      cy.get('@clubColorsField').find('label').contains('Club Colors');
+      cy.get('@clubColorsField').find('label > span').should('not.exist');
+      cy.get('@clubColorsField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-venue"]').as('venueField');
+      cy.get('@venueField').find('label').contains('Stadium name');
+      cy.get('@venueField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-founded"]').as('foundedField');
+      cy.get('@foundedField').find('label').contains('Founded');
+      cy.get('@foundedField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-address"]').as('addressField');
+      cy.get('@addressField').find('label').contains('Address');
+      cy.get('@addressField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-phone"]').as('phoneField');
+      cy.get('@phoneField').find('label').contains('Phone');
+      cy.get('@phoneField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-email"]').as('emailField');
+      cy.get('@emailField').find('label').contains('Email');
+      cy.get('@emailField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-website"]').as('websiteField');
+      cy.get('@websiteField').find('label').contains('Website');
+      cy.get('@websiteField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-update-logo"]').as('logoField');
+      cy.get('@logoField').find('label').contains('Upload logo');
+      cy.get('@logoField').find('label > span').should('not.exist');
+      cy.get('@logoField').find('input').should('be.visible');
+
+      cy.get('[data-cy="form-btn-update"]').contains('Update team');
+      cy.get('[data-cy="form-btn-delete"]').contains('Delete');
+    });
+    it('when clicking to update team should go to the home page', () => {
+      cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('GetTeam');
+      cy.get('[data-cy="team-actions-edit"]').eq(0).click();
+
+      cy.intercept('PUT', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('UpdateTeam');
+      cy.intercept('GET', URL_API, { fixture: 'teams.json' }).as('getTeams');
+      cy.get('[data-cy="form-btn-update"]').click();
+
+      cy.url().should('not.include', '/edit');
+      cy.get('h1').contains('CRUD-Clubes');
+    });
+    it('when clicking to delete team should go to the home page', () => {
+      cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('GetTeam');
+      cy.get('[data-cy="team-actions-edit"]').eq(0).click();
+
+      cy.intercept('DELETE', `${URL_API}/57`).as('DeleteTeam');
+      cy.intercept('GET', URL_API, { fixture: 'teams-two-lenght.json' }).as('getTwoTeams');
+      cy.get('[data-cy="form-btn-delete"]').click();
+
+      cy.wait('@getTwoTeams');
+
+      cy.url().should('not.include', '/edit');
+      cy.get('h1').contains('CRUD-Clubes');
+      cy.get('[data-cy="teams-table-body"]').find('tr').should('have.length', 2);
+    });
+  });
 });

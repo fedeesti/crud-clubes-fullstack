@@ -41,3 +41,13 @@ export async function createTeamRequest(teamData: FormValues) {
     throw new Error('Creating a team is not possible at this time');
   }
 }
+
+export async function updateTeamRequest(id: string, fieldsToUpdate: FormValues): Promise<AxiosResponse> {
+  try {
+    const response = await axios.put(`${URL_API_BASE}/${id}`, fieldsToUpdate);
+
+    return response;
+  } catch (err) {
+    throw new Error('ID is invalid or the team does not exist');
+  }
+}

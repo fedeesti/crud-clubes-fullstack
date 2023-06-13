@@ -22,7 +22,7 @@ interface Area {
 
 export interface FormValues {
   name: string;
-  country: string;
+  area: Omit<Area, 'id'>;
   shortName: string;
   tla: string;
   crestUrl: string;
