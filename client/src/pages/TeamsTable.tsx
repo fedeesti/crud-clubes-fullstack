@@ -1,9 +1,9 @@
 import { Team } from '../types';
-import { useAxiosFetch } from '../hooks/useAxiosFetch';
+import { useGetTeams } from '../hooks/useGetTeams';
 import { TeamItem } from '../components/TeamItem';
 
 export function TeamsTable() {
-  const { teams }: { teams: Team[] } = useAxiosFetch();
+  const { teams }: { teams: Team[] } = useGetTeams();
 
   return (
     <>

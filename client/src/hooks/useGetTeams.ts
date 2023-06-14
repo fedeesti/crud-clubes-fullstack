@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getTeamsRequest } from '../services/api';
 
-export function useAxiosFetch() {
+export function useGetTeams() {
   const [teams, setTeams] = useState([]);
 
   const fetchData = async (): Promise<void> => {

@@ -1,26 +1,11 @@
-import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import useWindowSize from '../hooks/useWindowSize';
-
-import { Team } from '../types';
-import { getTeamRequest } from '../services/api';
-
-type TeamViewer = Omit<Team, 'id' | 'lastUpdated'>;
+import useGetTeam from '../hooks/useGetTeam';
 
 export function WatchTeam() {
   const { id } = useParams();
-
   const { screenSize } = useWindowSize();
-  const [team, setTeam] = useState<TeamViewer>();
-
-  const getTeam = async (id: string | undefined) => {
-    const { data } = await getTeamRequest(id);
-    setTeam(data);
-  };
-
-  useEffect(() => {
-    getTeam(id);
-  }, [id]);
+  const { team } = useGetTeam(id);
 
   return (
     <>
