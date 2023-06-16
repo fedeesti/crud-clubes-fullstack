@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { FormValues } from '../types';
 import { createTeamRequest, deleteTeamRequest, getTeamRequest, updateTeamRequest } from '../services/api';
+import { createTeamSchema, updateTeamSchema } from '../schemas/team.schema';
 
 const INITIAL_VALUES: FormValues = {
   name: '',
@@ -15,7 +16,7 @@ const INITIAL_VALUES: FormValues = {
   phone: '',
   website: '',
   email: '',
-  founded: 0,
+  founded: null,
   clubColors: '',
   venue: '',
 };
@@ -70,15 +71,19 @@ export function TeamForm() {
   };
 
   return (
-    <Formik initialValues={initialValues} enableReinitialize={true} onSubmit={onSubmit}>
-      {(props) => (
+    <Formik
+      initialValues={initialValues}
+      enableReinitialize={true}
+      validationSchema={id ? updateTeamSchema : createTeamSchema}
+      onSubmit={onSubmit}
+    >
+      {({ setFieldValue }) => (
         <Form data-cy="team-form-container">
           <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
             <div className="sm:col-span-2" data-cy="form-team-name">
-              {' '}
               <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Team Name
-                {id ? '' : <span className="ml-px text-red-800">*</span>}
+                {id ? null : <span className="ml-px text-red-800">*</span>}
               </label>
               <Field
                 type="text"
@@ -86,9 +91,13 @@ export function TeamForm() {
                 id="name"
                 className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                 placeholder="Type team name"
-                required
               />
-              <ErrorMessage name="name" />
+              <ErrorMessage
+                name="name"
+                component="span"
+                data-cy="form-name-msg-error"
+                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
+              />
             </div>
             <div className="w-full" data-cy="form-short-name">
               <label htmlFor="shortName" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
@@ -99,11 +108,15 @@ export function TeamForm() {
                 type="text"
                 name="shortName"
                 id="shortName"
-                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                 placeholder="Type short name"
-                required
               />
-              <ErrorMessage name="shortName" />
+              <ErrorMessage
+                name="shortName"
+                component="span"
+                data-cy="form-short-name-msg-error"
+                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
+              />
             </div>
             <div className="w-full" data-cy="form-tla">
               <label htmlFor="tla" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
@@ -116,9 +129,13 @@ export function TeamForm() {
                 id="tla"
                 className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="AAA"
-                required
               />
-              <ErrorMessage name="tla" />
+              <ErrorMessage
+                name="tla"
+                component="span"
+                data-cy="form-tla-msg-error"
+                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
+              />
             </div>
             <div className="w-full" data-cy="form-country">
               <label htmlFor="area.name" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
@@ -129,8 +146,10 @@ export function TeamForm() {
                 as="select"
                 id="area.name"
                 name="area[name]"
-                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                required
+                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setFieldValue('area[name]', e.target.value);
+                }}
               >
                 <option value="country">Select country</option>
                 <option value="Africa">Africa</option>
@@ -195,7 +214,12 @@ export function TeamForm() {
                 <option value="Wales">Wales</option>
                 <option value="World">World</option>
               </Field>
-              <ErrorMessage name="area.name" />
+              <ErrorMessage
+                name="area[name]"
+                component="span"
+                data-cy="form-country-msg-error"
+                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
+              />
             </div>
             <div className="w-full" data-cy="form-club-colors">
               <label htmlFor="clubColors" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
@@ -208,9 +232,13 @@ export function TeamForm() {
                 id="clubColors"
                 className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="Type club colors"
-                required
               />
-              <ErrorMessage name="clubColors" />
+              <ErrorMessage
+                name="clubColors"
+                component="span"
+                data-cy="form-club-colors-msg-error"
+                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
+              />
             </div>
             <div className="w-full" data-cy="form-venue">
               <label htmlFor="venue" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
@@ -223,7 +251,12 @@ export function TeamForm() {
                 className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="Type Stadium name"
               />
-              <ErrorMessage name="venue" />
+              <ErrorMessage
+                name="venue"
+                component="span"
+                data-cy="form-venue-msg-error"
+                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
+              />
             </div>
             <div className="w-full" data-cy="form-founded">
               <label htmlFor="founded" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
@@ -233,10 +266,15 @@ export function TeamForm() {
                 type="number"
                 name="founded"
                 id="founded"
-                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                 placeholder="1900"
               />
-              <ErrorMessage name="founded" />
+              <ErrorMessage
+                name="founded"
+                component="span"
+                data-cy="form-founded-msg-error"
+                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
+              />
             </div>
             <div className="w-full" data-cy="form-address">
               <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
@@ -249,7 +287,12 @@ export function TeamForm() {
                 className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="Type address"
               />
-              <ErrorMessage name="address" />
+              <ErrorMessage
+                name="address"
+                component="span"
+                data-cy="form-address-msg-error"
+                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
+              />
             </div>
             <div className="w-full" data-cy="form-phone">
               <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
@@ -262,7 +305,12 @@ export function TeamForm() {
                 className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="44 (020) 76195003"
               />
-              <ErrorMessage name="phone" />
+              <ErrorMessage
+                name="phone"
+                component="span"
+                data-cy="form-phone-msg-error"
+                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
+              />
             </div>
             <div className="w-full" data-cy="form-email">
               <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
@@ -275,7 +323,12 @@ export function TeamForm() {
                 className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="teamname@gmail.com"
               />
-              <ErrorMessage name="email" />
+              <ErrorMessage
+                name="email"
+                component="span"
+                data-cy="form-email-msg-error"
+                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
+              />
             </div>
             <div className="w-full" data-cy="form-website">
               <label htmlFor="website" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
@@ -288,12 +341,17 @@ export function TeamForm() {
                 className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="www.teamname.com"
               />
-              <ErrorMessage name="website" />
+              <ErrorMessage
+                name="website"
+                component="span"
+                data-cy="form-website-msg-error"
+                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
+              />
             </div>
             <div className="sm:col-span-2" data-cy="form-update-logo">
               <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-white" htmlFor="crestUrl">
                 Upload logo
-                {id ? '' : <span className="ml-px text-red-800">*</span>}
+                {id ? null : <span className="ml-px text-red-800">*</span>}
               </label>
               <input
                 className="block w-full text-sm text-gray-800 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 file:bg-gray-800 file:py-1 file:cursor-pointer file:text-white hover:file:bg-gray-700"
@@ -301,13 +359,17 @@ export function TeamForm() {
                 type="file"
                 name="crestUrl"
                 accept=".png, .jpg, .jpeg, .svg"
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   const files = e.target.files;
-                  console.log(files);
-                  props.setFieldValue('crestUrl', URL.createObjectURL(files?.item(0) as Blob));
+                  setFieldValue('crestUrl', URL.createObjectURL(files?.item(0) as Blob));
                 }}
               />
-              <ErrorMessage name="crestUrl" />
+              <ErrorMessage
+                name="crestUrl"
+                component="span"
+                data-cy="form-logo-msg-error"
+                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
+              />
             </div>
           </div>
           {id ? (

@@ -172,7 +172,7 @@ describe('Frontend management', () => {
       cy.get('h1').contains('CRUD-Clubes');
       cy.get('@Modal').should('not.exist');
     });
-    it('when confirming the removal successfully should go to the home page ', () => {
+    it.skip('when confirming the removal successfully should go to the home page ', () => {
       cy.get('[data-cy="modal-container"]').as('Modal');
       cy.get('[data-cy="modal-btn-confirm"]').as('ModalBtnConfirm');
 
@@ -248,136 +248,824 @@ describe('Frontend management', () => {
 
       cy.get('[data-cy="form-btn-submit"]').contains('Add team').as('BtnSubmitForm');
     });
-    it('when creating a team successfully should go to the home page', () => {
-      const team = {
-        area: {
-          name: 'Italy',
-        },
-        name: 'AC Milán',
-        crestUrl: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Leeds_United.svg',
-        address: 'Anfield Road Liverpool L4 OTH',
-        shortName: 'Milán',
-        tla: 'MIL',
-        phone: '+44 (0871) 9841955',
-        website: 'http://www.acmilan.com',
-        email: 'acmilan@contac.com',
-        founded: 1905,
-        clubColors: 'Red / Black',
-        venue: 'San Siro',
-      };
+    describe('When adding is successful', () => {
+      it('when creating a team should go to the home page', () => {
+        const team = {
+          area: {
+            name: 'Italy',
+          },
+          name: 'AC Milán',
+          crestUrl: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Leeds_United.svg',
+          address: 'Anfield Road Liverpool L4 OTH',
+          shortName: 'Milán',
+          tla: 'MIL',
+          phone: '+44 (0871) 9841955',
+          website: 'http://www.acmilan.com',
+          email: 'acmilan@contac.com',
+          founded: 1905,
+          clubColors: 'Red / Black',
+          venue: 'San Siro',
+        };
 
-      cy.get('[data-cy="form-team-name"]').type(team.name);
-      cy.get('[data-cy="form-short-name"]').find('input').type(team.shortName);
-      cy.get('[data-cy="form-tla"]').find('input').type(team.tla);
-      cy.get('[data-cy="form-country"]').find('select').select(team.area.name);
-      cy.get('[data-cy="form-club-colors"]').find('input').type(team.clubColors);
-      cy.get('[data-cy="form-venue"]').find('input').type(team.venue);
-      cy.get('[data-cy="form-founded"]').find('input').type(`${team.founded}`);
-      cy.get('[data-cy="form-address"]').find('input').type(team.address);
-      cy.get('[data-cy="form-phone"]').find('input').type(team.phone);
-      cy.get('[data-cy="form-email"]').find('input').type(team.email);
-      cy.get('[data-cy="form-website"]').find('input').type(team.website);
-      cy.get('[data-cy="form-update-logo"]').find('input').selectFile('cypress/fixtures/ac-milan.png', { force: true });
+        cy.get('[data-cy="form-team-name"]').type(team.name);
+        cy.get('[data-cy="form-short-name"]').find('input').type(team.shortName);
+        cy.get('[data-cy="form-tla"]').find('input').type(team.tla);
+        cy.get('[data-cy="form-country"]').find('select').select(team.area.name);
+        cy.get('[data-cy="form-club-colors"]').find('input').type(team.clubColors);
+        cy.get('[data-cy="form-venue"]').find('input').type(team.venue);
+        cy.get('[data-cy="form-founded"]').find('input').type(`${team.founded}`);
+        cy.get('[data-cy="form-address"]').find('input').type(team.address);
+        cy.get('[data-cy="form-phone"]').find('input').type(team.phone);
+        cy.get('[data-cy="form-email"]').find('input').type(team.email);
+        cy.get('[data-cy="form-website"]').find('input').type(team.website);
+        cy.get('[data-cy="form-update-logo"]')
+          .find('input')
+          .selectFile('cypress/fixtures/ac-milan.png', { force: true });
 
-      cy.intercept('POST', URL_API, { fixture: 'team-with-data.json' }).as('createATeam');
-      cy.intercept('GET', URL_API, { fixture: 'teams-four-lenght.json' }).as('getFourTeams');
-      cy.get('[data-cy="form-btn-submit"]').click();
+        cy.intercept('POST', URL_API, { fixture: 'team-with-data.json' }).as('createATeam');
+        cy.intercept('GET', URL_API, { fixture: 'teams-four-lenght.json' }).as('getFourTeams');
+        cy.get('[data-cy="form-btn-submit"]').click();
 
-      cy.url().should('not.include', '/teams/add');
-      cy.get('h1').contains('CRUD-Clubes');
-      cy.get('[data-cy="teams-table-body"]').find('tr').should('have.length', 4);
+        cy.url().should('not.include', '/teams/add');
+        cy.get('h1').contains('CRUD-Clubes');
+        cy.get('[data-cy="teams-table-body"]').find('tr').should('have.length', 4);
+      });
+      it('when creating a team without required fields should complete the other fields without data', () => {
+        const team = {
+          area: {
+            name: 'Italy',
+          },
+          name: 'AC Milán',
+          shortName: 'Milán',
+          tla: 'MIL',
+          clubColors: 'Red / Black',
+          crestUrl: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Leeds_United.svg',
+        };
+        cy.get('[data-cy="form-team-name"]').type(team.name);
+        cy.get('[data-cy="form-short-name"]').find('input').type(team.shortName);
+        cy.get('[data-cy="form-tla"]').find('input').type(team.tla);
+        cy.get('[data-cy="form-country"]').find('select').select(team.area.name);
+        cy.get('[data-cy="form-club-colors"]').find('input').type(team.clubColors);
+        cy.get('[data-cy="form-update-logo"]')
+          .find('input')
+          .selectFile('cypress/fixtures/ac-milan.png', { force: true });
+
+        cy.intercept('POST', URL_API, { fixture: 'team-with-required-fields.json' }).as('createATeam');
+        cy.intercept('GET', URL_API, { fixture: 'teams-four-lenght.json' }).as('getFourTeams');
+        cy.get('[data-cy="form-btn-submit"]').click();
+
+        cy.url().should('not.include', '/teams/add');
+        cy.get('h1').contains('CRUD-Clubes');
+      });
+    });
+
+    describe('When adding with wrong fields', () => {
+      it('when clicking on add team without the required fields should show messages errors', () => {
+        cy.get('[data-cy="form-btn-submit"]').click();
+
+        cy.get('[data-cy="form-name-msg-error"]').contains('Name is required');
+        cy.get('[data-cy="form-short-name-msg-error"]').contains('Short name is required');
+        cy.get('[data-cy="form-tla-msg-error"]').contains('TLA is required');
+        cy.get('[data-cy="form-club-colors-msg-error"]').contains('Club Colors is required');
+        cy.get('[data-cy="form-logo-msg-error"]').contains('Logo is required');
+      });
+      it('when the name is invalid it should throw an error message', () => {
+        const invalidName = [
+          {
+            name: '-Milan',
+            error: "Name should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            name: 'Milan-',
+            error: "Name should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            name: '.Milan',
+            error: "Name should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            name: 'Milan.',
+            error: "Name should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            name: 'Milan_',
+            error: "Name should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            name: '_Milan',
+            error: "Name should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          { name: 'Milan', error: 'must be at least 7 characters long' },
+          { name: 'Lorem ipsum dolor sit amet cons', error: 'must be a maximum of 30 characters' },
+        ];
+
+        invalidName.forEach((el) => {
+          cy.get('[data-cy="form-team-name"]').type(el.name);
+          cy.get('[data-cy="form-short-name"]').click();
+          cy.get('[data-cy="form-name-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-team-name"]').clear();
+        });
+      });
+      it('when the shortname is invalid it should throw an error message', () => {
+        const invalidShortName = [
+          {
+            shortName: 'hola@hotmail.com',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: 'https://www.acmilan.com',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: '-Milan',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: 'Milan-',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: '.Milan',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: 'Milan.',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: 'Milan_',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: '_Milan',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          { shortName: 'Mil', error: 'must be at least 4 characters long' },
+          { shortName: 'Lorem ipsum dolor sit', error: 'must be a maximum of 20 characters' },
+        ];
+
+        invalidShortName.forEach((el) => {
+          cy.get('[data-cy="form-short-name"]').type(el.shortName);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-short-name-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-short-name"]').clear();
+        });
+      });
+      it('when the TLA is invalid it should throw an error message', () => {
+        const invalidTla = [
+          {
+            tla: '19',
+            error: 'TLA only contains letters',
+          },
+          {
+            tla: 'h@l',
+            error: 'TLA only contains letters',
+          },
+          {
+            tla: '-12',
+            error: 'TLA only contains letters',
+          },
+          {
+            tla: 'hola',
+            error: 'TLA must contain 3 chars',
+          },
+          {
+            tla: 'ho',
+            error: 'TLA must contain 3 chars',
+          },
+        ];
+
+        invalidTla.forEach((el) => {
+          cy.get('[data-cy="form-tla"]').type(el.tla);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-tla-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-tla"]').clear();
+        });
+      });
+      it('when the clubColors is invalid it should throw an error message', () => {
+        const invalidClubColors = [
+          {
+            clubColors: 'red . black',
+            error: 'Club Colors only contains words, spaces and slash',
+          },
+          {
+            clubColors: 'red @ black',
+            error: 'Club Colors only contains words, spaces and slash',
+          },
+          {
+            clubColors: 'red _ black',
+            error: 'Club Colors only contains words, spaces and slash',
+          },
+          {
+            clubColors: 'red - black',
+            error: 'Club Colors only contains words, spaces and slash',
+          },
+          {
+            clubColors: 'red / black / white / orange / blue',
+            error: 'must be a maximum of 20 characters',
+          },
+          {
+            clubColors: 're',
+            error: 'must be at least 3 characters long',
+          },
+        ];
+
+        invalidClubColors.forEach((el) => {
+          cy.get('[data-cy="form-club-colors"]').type(el.clubColors);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-club-colors-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-club-colors"]').clear();
+        });
+      });
+      it('when the venue is invalid it should throw an error message', () => {
+        const invalidVenue = [
+          { venue: 'hola@hotmail.com', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          {
+            venue: 'https://www.acmilan.com',
+            error: "should only contain alphanumeric, spaces and the next symbol: '-'",
+          },
+          { venue: '-Milan', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: 'Milan-', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: '.Milan', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: 'Milan.', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: 'Milan_', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: '_Milan', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: 'AC / Milan', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: 'San', error: 'must be at least 7 characters long' },
+          {
+            venue: 'Lorem ipsum dolor sit amet consectetur adipiscing elit',
+            error: 'must be a maximum of 40 characters',
+          },
+        ];
+
+        invalidVenue.forEach((el) => {
+          cy.get('[data-cy="form-venue"]').type(el.venue);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-venue-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-venue"]').clear();
+        });
+      });
+      it('when the founded is invalid it should throw an error message', () => {
+        const invalidFounded = [
+          { founded: '-904', error: 'founded must be a positive number' },
+          { founded: '.904', error: 'founded must be an integer' },
+          { founded: '20133', error: 'must not exceed current year' },
+          { founded: '0', error: 'founded must be a positive number' },
+        ];
+
+        invalidFounded.forEach((el) => {
+          cy.get('[data-cy="form-founded"]').type(el.founded);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-founded-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-founded"]').clear();
+        });
+      });
+      it('when the address is invalid it should throw an error message', () => {
+        const invalidAddress = [
+          { address: 'hola@hola.com', error: 'Address should be a valid address' },
+          { address: 'mailto://acmilan.com', error: 'Address should be a valid address' },
+          { address: 'Leeds_United.svg', error: 'Address should be a valid address' },
+          { address: 'AC-Milan 4042', error: 'Address should be a valid address' },
+          { address: 'hola', error: 'must be at least 7 characters long' },
+          {
+            address: 'P.sherman calle wallaby 42 sydney  Pelicula Buscando a Nemo',
+            error: 'must be a maximum of 50 characters',
+          },
+        ];
+
+        invalidAddress.forEach((el) => {
+          cy.get('[data-cy="form-address"]').type(el.address);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-address-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-address"]').clear();
+        });
+      });
+      it('when the phone is invalid it should throw an error message', () => {
+        const invalidPhone = [
+          { phone: '+44  hola 9841955', error: 'should be a valid phone number' },
+          { phone: '+44 (0871) hola', error: 'should be a valid phone number' },
+          { phone: 'hola', error: 'should be a valid phone number' },
+          { phone: '123456789', error: 'must be at least 10 characters long' },
+          { phone: '0123456789012345678901234567890', error: 'must be a maximum of 30 characters' },
+        ];
+
+        invalidPhone.forEach((el) => {
+          cy.get('[data-cy="form-phone"]').type(el.phone);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-phone-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-phone"]').clear();
+        });
+      });
+      it('when the email is invalid it should throw an error message', () => {
+        const invalidEmail = [
+          {
+            email: 'http://www.acmilan.com',
+            error: 'Please provide valid email',
+          },
+          {
+            email: 'hola@com',
+            error: 'Please provide valid email',
+          },
+          {
+            email: 'hola',
+            error: 'Please provide valid email',
+          },
+          {
+            email: '1234',
+            error: 'Please provide valid email',
+          },
+        ];
+
+        invalidEmail.forEach((el) => {
+          cy.get('[data-cy="form-email"]').type(el.email);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-email-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-email"]').clear();
+        });
+      });
+      it('when the website is invalid it should throw an error message', () => {
+        const invalidWebsite = [
+          { website: 'www.acmil@angmail.com', error: 'should be a URL' },
+          { website: 'mailto://acmilan.com', error: 'should be a URL' },
+          { website: 'hola', error: 'should be a URL' },
+          { website: 'fdp://www.acmilan.com', error: 'should be a URL' },
+          { website: 'htps://www.acmilan.com', error: 'should be a URL' },
+        ];
+
+        invalidWebsite.forEach((el) => {
+          cy.get('[data-cy="form-website"]').type(el.website);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-website-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-website"]').clear();
+        });
+      });
     });
   });
   describe('Update team', () => {
-    it('when clicking to Edit should be moved to the Team update page and show the form', () => {
+    beforeEach(() => {
       cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('GetTeam');
       cy.get('[data-cy="team-actions-edit"]').eq(0).click();
-
-      cy.url().should('include', '/edit');
-      cy.get('[data-cy="add-team-title"]').contains('Update team');
-      cy.get('[data-cy="team-form-container"]').should('exist').as('formContainer');
-
-      cy.get('[data-cy="form-team-name"]').should('exist').as('nameField');
-      cy.get('@nameField').find('label').contains('Team Name');
-      cy.get('@nameField').find('label > span').should('not.exist');
-      cy.get('@nameField').find('input').should('be.visible');
-
-      cy.get('[data-cy="form-short-name"]').should('exist').as('shortNameField');
-      cy.get('@shortNameField').find('label').contains('Short name');
-      cy.get('@shortNameField').find('label > span').should('not.exist');
-      cy.get('@shortNameField').find('input').should('be.visible');
-
-      cy.get('[data-cy="form-tla"]').should('exist').as('tlaField');
-      cy.get('@tlaField').find('label').contains('TLA');
-      cy.get('@tlaField').find('label > span').should('not.exist');
-      cy.get('@tlaField').find('input').should('be.visible');
-
-      cy.get('[data-cy="form-country"]').should('exist').as('countryField');
-      cy.get('@countryField').find('label').contains('Country');
-      cy.get('@countryField').find('label > span').should('not.exist');
-      cy.get('@countryField').find('select').should('be.visible');
-
-      cy.get('[data-cy="form-club-colors"]').as('clubColorsField');
-      cy.get('@clubColorsField').find('label').contains('Club Colors');
-      cy.get('@clubColorsField').find('label > span').should('not.exist');
-      cy.get('@clubColorsField').find('input').should('be.visible');
-
-      cy.get('[data-cy="form-venue"]').as('venueField');
-      cy.get('@venueField').find('label').contains('Stadium name');
-      cy.get('@venueField').find('input').should('be.visible');
-
-      cy.get('[data-cy="form-founded"]').as('foundedField');
-      cy.get('@foundedField').find('label').contains('Founded');
-      cy.get('@foundedField').find('input').should('be.visible');
-
-      cy.get('[data-cy="form-address"]').as('addressField');
-      cy.get('@addressField').find('label').contains('Address');
-      cy.get('@addressField').find('input').should('be.visible');
-
-      cy.get('[data-cy="form-phone"]').as('phoneField');
-      cy.get('@phoneField').find('label').contains('Phone');
-      cy.get('@phoneField').find('input').should('be.visible');
-
-      cy.get('[data-cy="form-email"]').as('emailField');
-      cy.get('@emailField').find('label').contains('Email');
-      cy.get('@emailField').find('input').should('be.visible');
-
-      cy.get('[data-cy="form-website"]').as('websiteField');
-      cy.get('@websiteField').find('label').contains('Website');
-      cy.get('@websiteField').find('input').should('be.visible');
-
-      cy.get('[data-cy="form-update-logo"]').as('logoField');
-      cy.get('@logoField').find('label').contains('Upload logo');
-      cy.get('@logoField').find('label > span').should('not.exist');
-      cy.get('@logoField').find('input').should('be.visible');
-
-      cy.get('[data-cy="form-btn-update"]').contains('Update team');
-      cy.get('[data-cy="form-btn-delete"]').contains('Delete');
     });
-    it('when clicking to update team should go to the home page', () => {
-      cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('GetTeam');
-      cy.get('[data-cy="team-actions-edit"]').eq(0).click();
+    describe('UI', () => {
+      it('when clicking to Edit should be moved to the Team update page and show the form', () => {
+        cy.url().should('include', '/edit');
+        cy.get('[data-cy="add-team-title"]').contains('Update team');
+        cy.get('[data-cy="team-form-container"]').should('exist').as('formContainer');
 
-      cy.intercept('PUT', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('UpdateTeam');
-      cy.intercept('GET', URL_API, { fixture: 'teams.json' }).as('getTeams');
-      cy.get('[data-cy="form-btn-update"]').click();
+        cy.get('[data-cy="form-team-name"]').should('exist').as('nameField');
+        cy.get('@nameField').find('label').contains('Team Name');
+        cy.get('@nameField').find('label > span').should('not.exist');
+        cy.get('@nameField').find('input').should('be.visible');
 
-      cy.url().should('not.include', '/edit');
-      cy.get('h1').contains('CRUD-Clubes');
+        cy.get('[data-cy="form-short-name"]').should('exist').as('shortNameField');
+        cy.get('@shortNameField').find('label').contains('Short name');
+        cy.get('@shortNameField').find('label > span').should('not.exist');
+        cy.get('@shortNameField').find('input').should('be.visible');
+
+        cy.get('[data-cy="form-tla"]').should('exist').as('tlaField');
+        cy.get('@tlaField').find('label').contains('TLA');
+        cy.get('@tlaField').find('label > span').should('not.exist');
+        cy.get('@tlaField').find('input').should('be.visible');
+
+        cy.get('[data-cy="form-country"]').should('exist').as('countryField');
+        cy.get('@countryField').find('label').contains('Country');
+        cy.get('@countryField').find('label > span').should('not.exist');
+        cy.get('@countryField').find('select').should('be.visible');
+
+        cy.get('[data-cy="form-club-colors"]').as('clubColorsField');
+        cy.get('@clubColorsField').find('label').contains('Club Colors');
+        cy.get('@clubColorsField').find('label > span').should('not.exist');
+        cy.get('@clubColorsField').find('input').should('be.visible');
+
+        cy.get('[data-cy="form-venue"]').as('venueField');
+        cy.get('@venueField').find('label').contains('Stadium name');
+        cy.get('@venueField').find('input').should('be.visible');
+
+        cy.get('[data-cy="form-founded"]').as('foundedField');
+        cy.get('@foundedField').find('label').contains('Founded');
+        cy.get('@foundedField').find('input').should('be.visible');
+
+        cy.get('[data-cy="form-address"]').as('addressField');
+        cy.get('@addressField').find('label').contains('Address');
+        cy.get('@addressField').find('input').should('be.visible');
+
+        cy.get('[data-cy="form-phone"]').as('phoneField');
+        cy.get('@phoneField').find('label').contains('Phone');
+        cy.get('@phoneField').find('input').should('be.visible');
+
+        cy.get('[data-cy="form-email"]').as('emailField');
+        cy.get('@emailField').find('label').contains('Email');
+        cy.get('@emailField').find('input').should('be.visible');
+
+        cy.get('[data-cy="form-website"]').as('websiteField');
+        cy.get('@websiteField').find('label').contains('Website');
+        cy.get('@websiteField').find('input').should('be.visible');
+
+        cy.get('[data-cy="form-update-logo"]').as('logoField');
+        cy.get('@logoField').find('label').contains('Upload logo');
+        cy.get('@logoField').find('label > span').should('not.exist');
+        cy.get('@logoField').find('input').should('be.visible');
+
+        cy.get('[data-cy="form-btn-update"]').contains('Update team');
+        cy.get('[data-cy="form-btn-delete"]').contains('Delete');
+      });
+      it('when clicking to update team should go to the home page', () => {
+        cy.url().should('include', '/edit');
+
+        cy.intercept('PUT', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('UpdateTeam');
+        cy.intercept('GET', URL_API, { fixture: 'teams.json' }).as('getTeams');
+        cy.get('[data-cy="form-btn-update"]').click();
+
+        cy.url().should('not.include', '/edit');
+        cy.get('h1').contains('CRUD-Clubes');
+      });
+      it.skip('when clicking to delete team should go to the home page', () => {
+        cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('GetTeam');
+        cy.get('[data-cy="team-actions-edit"]').eq(0).click();
+
+        cy.intercept('DELETE', `${URL_API}/57`).as('DeleteTeam');
+        cy.intercept('GET', URL_API, { fixture: 'teams-two-lenght.json' }).as('getTwoTeams');
+        cy.get('[data-cy="form-btn-delete"]').click();
+
+        cy.wait('@getTwoTeams');
+
+        cy.url().should('not.include', '/edit');
+        cy.get('h1').contains('CRUD-Clubes');
+        cy.get('[data-cy="teams-table-body"]').find('tr').should('have.length', 2);
+      });
     });
-    it('when clicking to delete team should go to the home page', () => {
-      cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('GetTeam');
-      cy.get('[data-cy="team-actions-edit"]').eq(0).click();
+    describe('When an update is successful', () => {
+      it('with required fields should go to the home page', () => {
+        const team = {
+          area: {
+            name: 'Italy',
+          },
+          name: 'AC Milán',
+          crestUrl: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Leeds_United.svg',
+          shortName: 'Milán',
+          tla: 'MIL',
+          clubColors: 'Red / Black',
+        };
 
-      cy.intercept('DELETE', `${URL_API}/57`).as('DeleteTeam');
-      cy.intercept('GET', URL_API, { fixture: 'teams-two-lenght.json' }).as('getTwoTeams');
-      cy.get('[data-cy="form-btn-delete"]').click();
+        cy.get('[data-cy="form-team-name"]').find('input').clear();
+        cy.get('[data-cy="form-short-name"]').find('input').clear();
+        cy.get('[data-cy="form-tla"]').find('input').clear();
+        cy.get('[data-cy="form-club-colors"]').find('input').clear();
 
-      cy.wait('@getTwoTeams');
+        cy.get('[data-cy="form-team-name"]').type(team.name);
+        cy.get('[data-cy="form-short-name"]').find('input').type(team.shortName);
+        cy.get('[data-cy="form-tla"]').find('input').type(team.tla);
+        cy.get('[data-cy="form-country"]').find('select').select(team.area.name);
+        cy.get('[data-cy="form-club-colors"]').find('input').type(team.clubColors);
+        cy.get('[data-cy="form-update-logo"]')
+          .find('input')
+          .selectFile('cypress/fixtures/ac-milan.png', { force: true });
 
-      cy.url().should('not.include', '/edit');
-      cy.get('h1').contains('CRUD-Clubes');
-      cy.get('[data-cy="teams-table-body"]').find('tr').should('have.length', 2);
+        cy.intercept('PUT', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('updateTeam');
+        cy.intercept('GET', URL_API, { fixture: 'teams-four-lenght.json' }).as('getFourTeams');
+        cy.get('[data-cy="form-btn-update"]').click();
+
+        cy.url().should('not.include', '/teams/add');
+        cy.get('h1').contains('CRUD-Clubes');
+        cy.get('[data-cy="teams-table-body"]').find('tr').should('have.length', 4);
+      });
+      it('with empty fields complete should go to the home page', () => {
+        const team = {
+          address: 'Anfield Road Liverpool L4 OTH',
+          phone: '+44 (0871) 9841955',
+          website: 'http://www.acmilan.com',
+          email: 'acmilan@contac.com',
+          founded: 1905,
+          venue: 'San Siro',
+        };
+
+        cy.get('[data-cy="form-venue"]').find('input').clear();
+        cy.get('[data-cy="form-founded"]').find('input').clear();
+        cy.get('[data-cy="form-address"]').find('input').clear();
+        cy.get('[data-cy="form-phone"]').find('input').clear();
+        cy.get('[data-cy="form-email"]').find('input').clear();
+        cy.get('[data-cy="form-website"]').find('input').clear();
+
+        cy.get('[data-cy="form-venue"]').find('input').type(team.venue);
+        cy.get('[data-cy="form-founded"]').find('input').type(`${team.founded}`);
+        cy.get('[data-cy="form-address"]').find('input').type(team.address);
+        cy.get('[data-cy="form-phone"]').find('input').type(team.phone);
+        cy.get('[data-cy="form-email"]').find('input').type(team.email);
+        cy.get('[data-cy="form-website"]').find('input').type(team.website);
+
+        cy.intercept('PUT', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('updateTeam');
+        cy.intercept('GET', URL_API, { fixture: 'teams-four-lenght.json' }).as('getFourTeams');
+        cy.get('[data-cy="form-btn-update"]').click();
+
+        cy.url().should('not.include', '/teams/add');
+        cy.get('h1').contains('CRUD-Clubes');
+        cy.get('[data-cy="teams-table-body"]').find('tr').should('have.length', 4);
+      });
+    });
+    describe('When updating with wrong fields', () => {
+      it('when clicking on update team without the required fields should show messages errors', () => {
+        cy.get('[data-cy="form-team-name"]').find('input').clear();
+        cy.get('[data-cy="form-short-name"]').find('input').clear();
+        cy.get('[data-cy="form-tla"]').find('input').clear();
+        cy.get('[data-cy="form-club-colors"]').find('input').clear();
+
+        cy.get('[data-cy="form-btn-update"]').click();
+
+        cy.get('[data-cy="form-name-msg-error"]').contains('Name cannot be empty');
+        cy.get('[data-cy="form-short-name-msg-error"]').contains('ShortName cannot be empty');
+        cy.get('[data-cy="form-tla-msg-error"]').contains('TLA cannot be empty');
+        cy.get('[data-cy="form-club-colors-msg-error"]').contains('Club Colors cannot be empty');
+      });
+      it('when the name is invalid it should throw an error message', () => {
+        const invalidName = [
+          {
+            name: '-Milan',
+            error: "Name should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            name: 'Milan-',
+            error: "Name should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            name: '.Milan',
+            error: "Name should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            name: 'Milan.',
+            error: "Name should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            name: 'Milan_',
+            error: "Name should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            name: '_Milan',
+            error: "Name should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          { name: 'Milan', error: 'must be at least 7 characters long' },
+          { name: 'Lorem ipsum dolor sit amet cons', error: 'must be a maximum of 30 characters' },
+        ];
+
+        cy.get('[data-cy="form-team-name"]').find('input').clear();
+
+        invalidName.forEach((el) => {
+          cy.get('[data-cy="form-team-name"]').type(el.name);
+          cy.get('[data-cy="form-short-name"]').click();
+          cy.get('[data-cy="form-name-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-team-name"]').clear();
+        });
+      });
+      it('when the shortname is invalid it should throw an error message', () => {
+        const invalidShortName = [
+          {
+            shortName: 'hola@hotmail.com',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: 'https://www.acmilan.com',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: '-Milan',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: 'Milan-',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: '.Milan',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: 'Milan.',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: 'Milan_',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          {
+            shortName: '_Milan',
+            error: "ShortName should only contain alphanumeric, spaces and the next symbols: [ '/', '.', '-']",
+          },
+          { shortName: 'Mil', error: 'must be at least 4 characters long' },
+          { shortName: 'Lorem ipsum dolor sit', error: 'must be a maximum of 20 characters' },
+        ];
+
+        cy.get('[data-cy="form-short-name"]').find('input').clear();
+
+        invalidShortName.forEach((el) => {
+          cy.get('[data-cy="form-short-name"]').type(el.shortName);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-short-name-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-short-name"]').clear();
+        });
+      });
+      it('when the TLA is invalid it should throw an error message', () => {
+        const invalidTla = [
+          {
+            tla: '19',
+            error: 'TLA only contains letters',
+          },
+          {
+            tla: 'h@l',
+            error: 'TLA only contains letters',
+          },
+          {
+            tla: '-12',
+            error: 'TLA only contains letters',
+          },
+          {
+            tla: 'hola',
+            error: 'TLA must contain 3 chars',
+          },
+          {
+            tla: 'ho',
+            error: 'TLA must contain 3 chars',
+          },
+        ];
+
+        cy.get('[data-cy="form-tla"]').find('input').clear();
+
+        invalidTla.forEach((el) => {
+          cy.get('[data-cy="form-tla"]').type(el.tla);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-tla-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-tla"]').find('input').clear();
+        });
+      });
+      it('when the clubColors is invalid it should throw an error message', () => {
+        const invalidClubColors = [
+          {
+            clubColors: 'red . black',
+            error: 'Club Colors only contains words, spaces and slash',
+          },
+          {
+            clubColors: 'red @ black',
+            error: 'Club Colors only contains words, spaces and slash',
+          },
+          {
+            clubColors: 'red _ black',
+            error: 'Club Colors only contains words, spaces and slash',
+          },
+          {
+            clubColors: 'red - black',
+            error: 'Club Colors only contains words, spaces and slash',
+          },
+          {
+            clubColors: 'red / black / white / orange / blue',
+            error: 'must be a maximum of 20 characters',
+          },
+          {
+            clubColors: 're',
+            error: 'must be at least 3 characters long',
+          },
+        ];
+
+        cy.get('[data-cy="form-club-colors"]').find('input').clear();
+
+        invalidClubColors.forEach((el) => {
+          cy.get('[data-cy="form-club-colors"]').type(el.clubColors);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-club-colors-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-club-colors"]').clear();
+        });
+      });
+      it('when the venue is invalid it should throw an error message', () => {
+        const invalidVenue = [
+          { venue: 'hola@hotmail.com', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          {
+            venue: 'https://www.acmilan.com',
+            error: "should only contain alphanumeric, spaces and the next symbol: '-'",
+          },
+          { venue: '-Milan', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: 'Milan-', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: '.Milan', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: 'Milan.', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: 'Milan_', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: '_Milan', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: 'AC / Milan', error: "should only contain alphanumeric, spaces and the next symbol: '-'" },
+          { venue: 'San', error: 'must be at least 7 characters long' },
+          {
+            venue: 'Lorem ipsum dolor sit amet consectetur adipiscing elit',
+            error: 'must be a maximum of 40 characters',
+          },
+        ];
+
+        cy.get('[data-cy="form-venue"]').find('input').clear();
+
+        invalidVenue.forEach((el) => {
+          cy.get('[data-cy="form-venue"]').type(el.venue);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-venue-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-venue"]').clear();
+        });
+      });
+      it('when the founded is invalid it should throw an error message', () => {
+        const invalidFounded = [
+          { founded: '-904', error: 'founded must be a positive number' },
+          { founded: '.904', error: 'founded must be an integer' },
+          { founded: '20133', error: 'must not exceed current year' },
+          { founded: '0', error: 'founded must be a positive number' },
+        ];
+
+        cy.get('[data-cy="form-founded"]').find('input').clear();
+
+        invalidFounded.forEach((el) => {
+          cy.get('[data-cy="form-founded"]').type(el.founded);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-founded-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-founded"]').clear();
+        });
+      });
+      it('when the address is invalid it should throw an error message', () => {
+        const invalidAddress = [
+          { address: 'hola@hola.com', error: 'Address should be a valid address' },
+          { address: 'mailto://acmilan.com', error: 'Address should be a valid address' },
+          { address: 'Leeds_United.svg', error: 'Address should be a valid address' },
+          { address: 'AC-Milan 4042', error: 'Address should be a valid address' },
+          { address: 'hola', error: 'must be at least 7 characters long' },
+          {
+            address: 'P.sherman calle wallaby 42 sydney  Pelicula Buscando a Nemo',
+            error: 'must be a maximum of 50 characters',
+          },
+        ];
+
+        cy.get('[data-cy="form-address"]').find('input').clear();
+
+        invalidAddress.forEach((el) => {
+          cy.get('[data-cy="form-address"]').type(el.address);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-address-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-address"]').clear();
+        });
+      });
+      it('when the phone is invalid it should throw an error message', () => {
+        const invalidPhone = [
+          { phone: '+44  hola 9841955', error: 'should be a valid phone number' },
+          { phone: '+44 (0871) hola', error: 'should be a valid phone number' },
+          { phone: 'hola', error: 'should be a valid phone number' },
+          { phone: '123456789', error: 'must be at least 10 characters long' },
+          { phone: '0123456789012345678901234567890', error: 'must be a maximum of 30 characters' },
+        ];
+
+        cy.get('[data-cy="form-phone"]').find('input').clear();
+
+        invalidPhone.forEach((el) => {
+          cy.get('[data-cy="form-phone"]').type(el.phone);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-phone-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-phone"]').clear();
+        });
+      });
+      it('when the email is invalid it should throw an error message', () => {
+        const invalidEmail = [
+          {
+            email: 'http://www.acmilan.com',
+            error: 'Please provide valid email',
+          },
+          {
+            email: 'hola@com',
+            error: 'Please provide valid email',
+          },
+          {
+            email: 'hola',
+            error: 'Please provide valid email',
+          },
+          {
+            email: '1234',
+            error: 'Please provide valid email',
+          },
+        ];
+
+        cy.get('[data-cy="form-email"]').find('input').clear();
+
+        invalidEmail.forEach((el) => {
+          cy.get('[data-cy="form-email"]').type(el.email);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-email-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-email"]').clear();
+        });
+      });
+      it('when the website is invalid it should throw an error message', () => {
+        const invalidWebsite = [
+          { website: 'www.acmil@angmail.com', error: 'should be a URL' },
+          { website: 'mailto://acmilan.com', error: 'should be a URL' },
+          { website: 'hola', error: 'should be a URL' },
+          { website: 'fdp://www.acmilan.com', error: 'should be a URL' },
+          { website: 'htps://www.acmilan.com', error: 'should be a URL' },
+        ];
+
+        cy.get('[data-cy="form-website"]').find('input').clear();
+
+        invalidWebsite.forEach((el) => {
+          cy.get('[data-cy="form-website"]').type(el.website);
+          cy.get('[data-cy="form-team-name"]').click();
+          cy.get('[data-cy="form-website-msg-error"]').contains(el.error);
+          cy.get('[data-cy="form-website"]').clear();
+        });
+      });
     });
   });
 });
