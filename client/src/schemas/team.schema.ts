@@ -115,15 +115,17 @@ export const updateTeamSchema = yup.object({
     .trim()
     .matches(addressRegex, { message: 'Address should be a valid address' })
     .min(7, 'must be at least 7 characters long')
-    .max(50, 'must be a maximum of 50 characters'),
+    .max(50, 'must be a maximum of 50 characters')
+    .nullable(),
   phone: yup
     .string()
     .trim()
     .matches(phoneRegex, { message: 'should be a valid phone number' })
     .min(10, 'must be at least 10 characters long')
-    .max(30, 'must be a maximum of 30 characters'),
-  website: yup.string().trim().matches(websiteRegex, { message: 'should be a URL' }).url('should be a URL'),
-  email: yup.string().trim().matches(emailRegex, { message: 'Please provide valid email' }),
+    .max(30, 'must be a maximum of 30 characters')
+    .nullable(),
+  website: yup.string().trim().matches(websiteRegex, { message: 'should be a URL' }).url('should be a URL').nullable(),
+  email: yup.string().trim().matches(emailRegex, { message: 'Please provide valid email' }).nullable(),
   founded: yup
     .number()
     .lessThan(todayDate.getUTCFullYear(), 'must not exceed current year')
@@ -135,5 +137,6 @@ export const updateTeamSchema = yup.object({
     .trim()
     .matches(venueRegex, { message: "should only contain alphanumeric, spaces and the next symbol: '-'" })
     .min(7, 'must be at least 7 characters long')
-    .max(40, 'must be a maximum of 40 characters'),
+    .max(40, 'must be a maximum of 40 characters')
+    .nullable(),
 });

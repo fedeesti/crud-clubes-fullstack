@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FormValues } from '../types';
 import { createTeamRequest, deleteTeamRequest, getTeamRequest, updateTeamRequest } from '../services/api';
 import { createTeamSchema, updateTeamSchema } from '../schemas/team.schema';
+import { countries } from '../utils/constants';
 
 const INITIAL_VALUES: FormValues = {
   name: '',
@@ -147,72 +148,13 @@ export function TeamForm() {
                 id="area.name"
                 name="area[name]"
                 className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setFieldValue('area[name]', e.target.value);
-                }}
               >
                 <option value="country">Select country</option>
-                <option value="Africa">Africa</option>
-                <option value="Argentina">Argentina</option>
-                <option value="Asia">Asia</option>
-                <option value="Australia">Australia</option>
-                <option value="Austria">Austria</option>
-                <option value="Belgium">Belgium</option>
-                <option value="Bolivia">Bolivia</option>
-                <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
-                <option value="Brazil">Brazil</option>
-                <option value="Bulgaria">Bulgaria</option>
-                <option value="Canada">Canada</option>
-                <option value="Chile">Chile</option>
-                <option value="China">China</option>
-                <option value="Colombia">Colombia</option>
-                <option value="Croatia">Croatia</option>
-                <option value="Czech Republic">Czech Republic</option>
-                <option value="Denmark">Denmark</option>
-                <option value="Ecuador">Ecuador</option>
-                <option value="England">England</option>
-                <option value="Estonia">Estonia</option>
-                <option value="Europe">Europe</option>
-                <option value="Finland">Finland</option>
-                <option value="France">France</option>
-                <option value="Germany">Germany</option>
-                <option value="Greece">Greece</option>
-                <option value="Hungary">Hungary</option>
-                <option value="Iceland">Iceland</option>
-                <option value="India">India</option>
-                <option value="Israel">Israel</option>
-                <option value="Italy">Italy</option>
-                <option value="Japan">Japan</option>
-                <option value="Latvia">Latvia</option>
-                <option value="Lithuania">Lithuania</option>
-                <option value="Malta">Malta</option>
-                <option value="Mexico">Mexico</option>
-                <option value="Netherlands">Netherlands</option>
-                <option value="North Ireland">North Ireland</option>
-                <option value="Norway">Norway</option>
-                <option value="Oceania">Oceania</option>
-                <option value="Panama">Panama</option>
-                <option value="Paraguay">Paraguay</option>
-                <option value="Peru">Peru</option>
-                <option value="Poland">Poland</option>
-                <option value="Portugal">Portugal</option>
-                <option value="Republic of Ireland">Republic of Ireland</option>
-                <option value="Romania">Romania</option>
-                <option value="Russian Federation">Russian Federation</option>
-                <option value="Scotland">Scotland</option>
-                <option value="South Africa">South Africa</option>
-                <option value="South America">South America</option>
-                <option value="Spain">Spain</option>
-                <option value="Sweden">Sweden</option>
-                <option value="Switzerland">Switzerland</option>
-                <option value="Turkey">Turkey</option>
-                <option value="Ukraine">Ukraine</option>
-                <option value="United States">United States</option>
-                <option value="Uruguay">Uruguay</option>
-                <option value="Venezuela">Venezuela</option>
-                <option value="Vietnam">Vietnam</option>
-                <option value="Wales">Wales</option>
-                <option value="World">World</option>
+                {countries.map((country) => (
+                  <option key={country.id} value={country.name}>
+                    {country.name}
+                  </option>
+                ))}
               </Field>
               <ErrorMessage
                 name="area[name]"
@@ -361,6 +303,7 @@ export function TeamForm() {
                 accept=".png, .jpg, .jpeg, .svg"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   const files = e.target.files;
+                  console.log(files);
                   setFieldValue('crestUrl', URL.createObjectURL(files?.item(0) as Blob));
                 }}
               />
