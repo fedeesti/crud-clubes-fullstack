@@ -55,7 +55,7 @@ describe('Frontend management', () => {
     it('tests trying to navigate from home page to team page', () => {
       cy.get('[data-cy="team-row-actions"]').as('Actions');
 
-      cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-without-data.json' });
+      cy.intercept('GET', `${URL_API}/1`, { fixture: 'team-without-data.json' });
       cy.get('@Actions').find('a').eq(0).click();
 
       cy.get('[data-cy="team-title"]').as('TeamTitle');
@@ -66,7 +66,7 @@ describe('Frontend management', () => {
   describe('Team page', () => {
     it('should show the team all their data', () => {
       cy.get('[data-cy="team-row-actions"]').as('Actions');
-      cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('getTeam');
+      cy.intercept('GET', `${URL_API}/1`, { fixture: 'team-with-data.json' }).as('getTeam');
       cy.get('@Actions').find('a').eq(0).click();
 
       cy.get('[data-cy="team-header"]').as('TeamHeader');
@@ -87,7 +87,7 @@ describe('Frontend management', () => {
     });
     it('should show the team without your data', () => {
       cy.get('[data-cy="team-row-actions"]').as('Actions');
-      cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-without-data.json' }).as('getTeam');
+      cy.intercept('GET', `${URL_API}/1`, { fixture: 'team-without-data.json' }).as('getTeam');
       cy.get('@Actions').find('a').eq(0).click();
 
       cy.get('[data-cy="team-header"]').as('TeamHeader');
@@ -172,14 +172,17 @@ describe('Frontend management', () => {
       cy.get('h1').contains('CRUD-Clubes');
       cy.get('@Modal').should('not.exist');
     });
-    it.skip('when confirming the removal successfully should go to the home page ', () => {
+    it('when confirming the removal successfully should go to the home page ', () => {
       cy.get('[data-cy="modal-container"]').as('Modal');
       cy.get('[data-cy="modal-btn-confirm"]').as('ModalBtnConfirm');
 
-      cy.intercept('DELETE', `${URL_API}/57`).as('DeleteTeam');
+      cy.intercept('DELETE', `${URL_API}/1`, { fixture: 'team-with-data.json' }).as('DeleteTeam');
       cy.intercept('GET', URL_API, { fixture: 'teams-two-lenght.json' }).as('getTwoTeams');
       cy.get('@ModalBtnConfirm').click();
+
+      cy.wait('@DeleteTeam');
       cy.wait('@getTwoTeams');
+
       cy.get('[data-cy="teams-table-body"]').find('tr').should('have.length', 2);
     });
   });
@@ -603,7 +606,7 @@ describe('Frontend management', () => {
   });
   describe('Update team', () => {
     beforeEach(() => {
-      cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('GetTeam');
+      cy.intercept('GET', `${URL_API}/1`, { fixture: 'team-with-data.json' }).as('GetTeam');
       cy.get('[data-cy="team-actions-edit"]').eq(0).click();
     });
     describe('UI', () => {
@@ -672,18 +675,15 @@ describe('Frontend management', () => {
       it('when clicking to update team should go to the home page', () => {
         cy.url().should('include', '/edit');
 
-        cy.intercept('PUT', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('UpdateTeam');
+        cy.intercept('PUT', `${URL_API}/1`, { fixture: 'team-with-data.json' }).as('UpdateTeam');
         cy.intercept('GET', URL_API, { fixture: 'teams.json' }).as('getTeams');
         cy.get('[data-cy="form-btn-update"]').click();
 
         cy.url().should('not.include', '/edit');
         cy.get('h1').contains('CRUD-Clubes');
       });
-      it.skip('when clicking to delete team should go to the home page', () => {
-        cy.intercept('GET', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('GetTeam');
-        cy.get('[data-cy="team-actions-edit"]').eq(0).click();
-
-        cy.intercept('DELETE', `${URL_API}/57`).as('DeleteTeam');
+      it('when clicking to delete team should go to the home page', () => {
+        cy.intercept('DELETE', `${URL_API}/1`, { fixture: 'team-without-data.json' }).as('DeleteTeam');
         cy.intercept('GET', URL_API, { fixture: 'teams-two-lenght.json' }).as('getTwoTeams');
         cy.get('[data-cy="form-btn-delete"]').click();
 
@@ -721,7 +721,7 @@ describe('Frontend management', () => {
           .find('input')
           .selectFile('cypress/fixtures/ac-milan.png', { force: true });
 
-        cy.intercept('PUT', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('updateTeam');
+        cy.intercept('PUT', `${URL_API}/1`, { fixture: 'team-with-data.json' }).as('updateTeam');
         cy.intercept('GET', URL_API, { fixture: 'teams-four-lenght.json' }).as('getFourTeams');
         cy.get('[data-cy="form-btn-update"]').click();
 
@@ -753,7 +753,7 @@ describe('Frontend management', () => {
         cy.get('[data-cy="form-email"]').find('input').type(team.email);
         cy.get('[data-cy="form-website"]').find('input').type(team.website);
 
-        cy.intercept('PUT', `${URL_API}/57`, { fixture: 'team-with-data.json' }).as('updateTeam');
+        cy.intercept('PUT', `${URL_API}/1`, { fixture: 'team-with-data.json' }).as('updateTeam');
         cy.intercept('GET', URL_API, { fixture: 'teams-four-lenght.json' }).as('getFourTeams');
         cy.get('[data-cy="form-btn-update"]').click();
 
