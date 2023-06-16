@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import useWindowSize from '../hooks/useWindowSize';
 import useGetTeam from '../hooks/useGetTeam';
 
-export function WatchTeam() {
+export function WatchTeam(): JSX.Element {
   const { id } = useParams();
   const { screenSize } = useWindowSize();
   const { team } = useGetTeam(id);

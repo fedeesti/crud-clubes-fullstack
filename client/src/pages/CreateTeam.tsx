@@ -1,6 +1,6 @@
 import { TeamForm } from '../components/TeamForm';
 
-export function CreateTeam() {
+export function CreateTeam(): JSX.Element {
   return (
     <section className="pt-28">
       <div className="py-8 px-4 mx-auto max-w-2xl lg:py-16">

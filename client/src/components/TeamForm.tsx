@@ -1,75 +1,14 @@
-import { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-import { FormValues } from '../types';
-import { createTeamRequest, deleteTeamRequest, getTeamRequest, updateTeamRequest } from '../services/api';
+import { useCustomFormik } from '../hooks/useCustomFormik';
 import { createTeamSchema, updateTeamSchema } from '../schemas/team.schema';
 import { countries } from '../utils/constants';
-
-const INITIAL_VALUES: FormValues = {
-  name: '',
-  area: { name: '' },
-  shortName: '',
-  tla: '',
-  crestUrl: '',
-  address: '',
-  phone: '',
-  website: '',
-  email: '',
-  founded: null,
-  clubColors: '',
-  venue: '',
-};
+import { MyCustomInput } from './MyCustomInput';
 
 export function TeamForm() {
-  const navigate = useNavigate();
   const { id } = useParams();
-
-  const [initialValues, setInitialValues] = useState<FormValues>(INITIAL_VALUES);
-
-  const getTeam = async () => {
-    if (id) {
-      const { data } = await getTeamRequest(id);
-
-      const team = {
-        area: { name: data.area.name },
-        name: data.name,
-        shortName: data.shortName,
-        tla: data.tla,
-        crestUrl: data.crestUrl,
-        address: data.address,
-        phone: data.phone,
-        website: data.website,
-        email: data.email,
-        founded: data.founded,
-        clubColors: data.clubColors,
-        venue: data.venue,
-      };
-
-      setInitialValues(team);
-    }
-  };
-
-  const onDelete = (id: number) => {
-    deleteTeamRequest(id);
-    navigate('/');
-  };
-
-  useEffect(() => {
-    getTeam();
-  }, []);
-
-  const onSubmit = (values: FormValues) => {
-    if (id) {
-      updateTeamRequest(id, values);
-    } else {
-      createTeamRequest(values);
-    }
-
-    setInitialValues(INITIAL_VALUES);
-    navigate('/');
-  };
+  const { initialValues, onDelete, onSubmit } = useCustomFormik(id);
 
   return (
     <Formik
@@ -82,7 +21,15 @@ export function TeamForm() {
         <Form data-cy="team-form-container">
           <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
             <div className="sm:col-span-2" data-cy="form-team-name">
-              <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
+              <MyCustomInput
+                label="Team Name"
+                name="name"
+                id={id}
+                type="text"
+                placeholder="Type team name"
+                cypress="form-name-msg-error"
+              />
+              {/* <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Team Name
                 {id ? null : <span className="ml-px text-red-800">*</span>}
               </label>
@@ -98,10 +45,18 @@ export function TeamForm() {
                 component="span"
                 data-cy="form-name-msg-error"
                 className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              />
+              /> */}
             </div>
             <div className="w-full" data-cy="form-short-name">
-              <label htmlFor="shortName" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
+              <MyCustomInput
+                label="Short name"
+                name="shortName"
+                id={id}
+                type="text"
+                placeholder="Type short name"
+                cypress="form-short-name-msg-error"
+              />
+              {/* <label htmlFor="shortName" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Short name
                 {id ? '' : <span className="ml-px text-red-800">*</span>}
               </label>
@@ -117,10 +72,18 @@ export function TeamForm() {
                 component="span"
                 data-cy="form-short-name-msg-error"
                 className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              />
+              /> */}
             </div>
             <div className="w-full" data-cy="form-tla">
-              <label htmlFor="tla" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
+              <MyCustomInput
+                label="TLA"
+                name="tla"
+                id={id}
+                type="text"
+                placeholder="AAA"
+                cypress="form-tla-msg-error"
+              />
+              {/* <label htmlFor="tla" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 TLA
                 {id ? '' : <span className="ml-px text-red-800">*</span>}
               </label>
@@ -136,7 +99,7 @@ export function TeamForm() {
                 component="span"
                 data-cy="form-tla-msg-error"
                 className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              />
+              /> */}
             </div>
             <div className="w-full" data-cy="form-country">
               <label htmlFor="area.name" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
@@ -164,7 +127,15 @@ export function TeamForm() {
               />
             </div>
             <div className="w-full" data-cy="form-club-colors">
-              <label htmlFor="clubColors" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
+              <MyCustomInput
+                label="Club Colors"
+                name="clubColors"
+                id={id}
+                type="text"
+                placeholder="Type club colors"
+                cypress="form-club-colors-msg-error"
+              />
+              {/* <label htmlFor="clubColors" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Club Colors
                 {id ? '' : <span className="ml-px text-red-800">*</span>}
               </label>
@@ -180,10 +151,17 @@ export function TeamForm() {
                 component="span"
                 data-cy="form-club-colors-msg-error"
                 className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              />
+              /> */}
             </div>
             <div className="w-full" data-cy="form-venue">
-              <label htmlFor="venue" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
+              <MyCustomInput
+                label="Stadium name"
+                name="venue"
+                type="text"
+                placeholder="Type Stadium name"
+                cypress="form-venue-msg-error"
+              />
+              {/* <label htmlFor="venue" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Stadium name
               </label>
               <Field
@@ -198,10 +176,17 @@ export function TeamForm() {
                 component="span"
                 data-cy="form-venue-msg-error"
                 className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              />
+              /> */}
             </div>
             <div className="w-full" data-cy="form-founded">
-              <label htmlFor="founded" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
+              <MyCustomInput
+                label="Founded"
+                name="founded"
+                type="number"
+                placeholder="1900"
+                cypress="form-founded-msg-error"
+              />
+              {/* <label htmlFor="founded" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Founded
               </label>
               <Field
@@ -216,10 +201,17 @@ export function TeamForm() {
                 component="span"
                 data-cy="form-founded-msg-error"
                 className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              />
+              /> */}
             </div>
             <div className="w-full" data-cy="form-address">
-              <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
+              <MyCustomInput
+                label="Address"
+                name="address"
+                type="text"
+                placeholder="Type address"
+                cypress="form-address-msg-error"
+              />
+              {/* <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Address
               </label>
               <Field
@@ -234,10 +226,17 @@ export function TeamForm() {
                 component="span"
                 data-cy="form-address-msg-error"
                 className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              />
+              /> */}
             </div>
             <div className="w-full" data-cy="form-phone">
-              <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
+              <MyCustomInput
+                label="Phone"
+                name="phone"
+                type="tel"
+                placeholder="44 (020) 76195003"
+                cypress="form-phone-msg-error"
+              />
+              {/* <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Phone
               </label>
               <Field
@@ -252,10 +251,17 @@ export function TeamForm() {
                 component="span"
                 data-cy="form-phone-msg-error"
                 className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              />
+              /> */}
             </div>
             <div className="w-full" data-cy="form-email">
-              <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
+              <MyCustomInput
+                label="Email"
+                name="email"
+                type="text"
+                placeholder="teamname@gmail.com"
+                cypress="form-email-msg-error"
+              />
+              {/* <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Email
               </label>
               <Field
@@ -270,10 +276,17 @@ export function TeamForm() {
                 component="span"
                 data-cy="form-email-msg-error"
                 className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              />
+              /> */}
             </div>
             <div className="w-full" data-cy="form-website">
-              <label htmlFor="website" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
+              <MyCustomInput
+                label="Website"
+                name="website"
+                type="url"
+                placeholder="www.teamname.com"
+                cypress="form-website-msg-error"
+              />
+              {/* <label htmlFor="website" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
                 Website
               </label>
               <Field
@@ -288,7 +301,7 @@ export function TeamForm() {
                 component="span"
                 data-cy="form-website-msg-error"
                 className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              />
+              /> */}
             </div>
             <div className="sm:col-span-2" data-cy="form-update-logo">
               <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-white" htmlFor="crestUrl">
@@ -303,7 +316,6 @@ export function TeamForm() {
                 accept=".png, .jpg, .jpeg, .svg"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   const files = e.target.files;
-                  console.log(files);
                   setFieldValue('crestUrl', URL.createObjectURL(files?.item(0) as Blob));
                 }}
               />

@@ -5,7 +5,7 @@ import { WatchTeam } from './pages/WatchTeam';
 import { CreateTeam } from './pages/CreateTeam';
 import { UpdateTeam } from './pages/UpdateTeam';
 
-function App() {
+function App(): JSX.Element {
   return (
     <main>
       <Navbar />

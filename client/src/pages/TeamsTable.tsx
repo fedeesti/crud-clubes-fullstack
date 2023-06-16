@@ -2,7 +2,7 @@ import { Team } from '../types';
 import { useGetTeams } from '../hooks/useGetTeams';
 import { TeamItem } from '../components/TeamItem';
 
-export function TeamsTable() {
+export function TeamsTable(): JSX.Element {
   const { teams }: { teams: Team[] } = useGetTeams();
 
   return (
