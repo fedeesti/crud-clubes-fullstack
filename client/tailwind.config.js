@@ -31,6 +31,9 @@ export default {
       minWidth: {
         sm: '320px',
       },
+      width: {
+        98: '420px',
+      },
     },
   },
   plugins: [],
