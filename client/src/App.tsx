@@ -7,15 +7,17 @@ import { UpdateTeam } from './pages/UpdateTeam';
 
 function App(): JSX.Element {
   return (
-    <main>
+    <>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<TeamsTable />} />
-        <Route path="/teams/:id" element={<WatchTeam />} />
-        <Route path="/teams/add" element={<CreateTeam />} />
-        <Route path="/teams/:id/edit" element={<UpdateTeam />} />
-      </Routes>
-    </main>
+      <main>
+        <Routes>
+          <Route path="/" element={<TeamsTable />} />
+          <Route path="/teams/:id" element={<WatchTeam />} />
+          <Route path="/teams/add" element={<CreateTeam />} />
+          <Route path="/teams/:id/edit" element={<UpdateTeam />} />
+        </Routes>
+      </main>
+    </>
   );
 }
 

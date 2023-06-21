@@ -1,20 +1,25 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { useNavbarExpanded } from '../hooks/useNavbarExpanded';
 import logoSvg from '../img/soccer-svgrepo-com.svg';
 
 export function Navbar(): JSX.Element {
+  const { isMenuExpanded, isSearchExpanded, toggleMenuExpanded, toggleSearchExpanded, hideNavbarExpanded } =
+    useNavbarExpanded();
+
   return (
     <nav className="border-gray-200 bg-gray-900 w-full fixed">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <Link to="/" className="flex items-center" data-cy="navbar-logo-container">
+        <NavLink to="/" className="flex items-center" data-cy="navbar-logo-container" onClick={hideNavbarExpanded}>
           <img src={logoSvg} className="h-8 mr-2" alt="CRUD-Clubes Logo" />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">CRUD-Clubes</span>
-        </Link>
+          <span className="self-center text-lg md:text-2xl font-semibold whitespace-nowrap text-white">
+            CRUD-Clubes
+          </span>
+        </NavLink>
         <div className="flex md:order-2" id="nav-search-team">
           <button
             type="button"
-            data-collapse-toggle="navbar-search"
-            aria-controls="navbar-search"
-            aria-expanded="false"
+            data-cy="nav-btn-search-icon"
+            onClick={toggleSearchExpanded}
             className="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 mr-1"
           >
             <svg
@@ -57,11 +62,10 @@ export function Navbar(): JSX.Element {
             />
           </div>
           <button
-            data-collapse-toggle="navbar-search"
             type="button"
-            className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            aria-controls="navbar-search"
-            aria-expanded="false"
+            data-cy="nav-btn-menu-icon"
+            onClick={toggleMenuExpanded}
+            className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
           >
             <span className="sr-only">Open menu</span>
             <svg
@@ -79,8 +83,12 @@ export function Navbar(): JSX.Element {
             </svg>
           </button>
         </div>
-        <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1">
-          <div className="relative mt-3 md:hidden">
+        <div className="items-center justify-between w-full flex md:w-auto md:order-1" onBlur={hideNavbarExpanded}>
+          <div
+            data-cy="nav-search-mobile"
+            className={`relative mt-3 ${isSearchExpanded ? 'm-auto' : 'hidden'}`}
+            onBlur={hideNavbarExpanded}
+          >
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
                 className="w-5 h-5 text-gray-500"
@@ -104,27 +112,39 @@ export function Navbar(): JSX.Element {
             />
           </div>
           <ul
-            className="flex flex-col p-4 md:p-0 mt-4 font-medium border rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 bg-gray-900"
+            onBlur={hideNavbarExpanded}
+            className={`${
+              isMenuExpanded ? 'w-full' : 'hidden'
+            } md:flex flex-col p-4 md:p-0 mt-4 font-medium border rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 bg-gray-900`}
             data-cy="navbar-menu"
           >
             <li>
-              <Link
+              <NavLink
                 to="/"
-                className="block py-2 pl-3 pr-4 text-white bg-sky-300 rounded md:bg-transparent md:text-sky-200 md:p-0"
-                aria-current="page"
                 data-cy="navbar-menu-home"
+                onClick={hideNavbarExpanded}
+                className={({ isActive }: { isActive: boolean }): string => {
+                  return `block py-2 pl-3 pr-4 text-white rounded hover:bg-gray-800 md:hover:bg-transparent md:hover:text-teal-200 md:p-0 ${
+                    isActive ? 'md:text-teal-200' : ''
+                  }`;
+                }}
               >
                 Home
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to="/teams/add"
-                className="block py-2 pl-3 pr-4 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-teal-200 md:p-0 md:dark:hover:text-blue-500"
                 data-cy="navbar-menu-create-team"
+                onClick={hideNavbarExpanded}
+                className={({ isActive }: { isActive: boolean }): string => {
+                  return `block py-2 pl-3 pr-4 text-white rounded hover:bg-gray-800 md:hover:bg-transparent md:hover:text-teal-200 md:p-0 ${
+                    isActive ? 'md:text-teal-200' : ''
+                  }`;
+                }}
               >
                 Create team
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </div>

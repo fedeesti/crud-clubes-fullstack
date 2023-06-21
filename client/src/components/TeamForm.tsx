@@ -3,12 +3,14 @@ import { useParams } from 'react-router-dom';
 
 import { useCustomFormik } from '../hooks/useCustomFormik';
 import { createTeamSchema, updateTeamSchema } from '../schemas/team.schema';
-import { countries } from '../utils/constants';
 import { MyCustomInput } from './MyCustomInput';
+import { countries } from '../utils/constants';
 
 export function TeamForm() {
   const { id } = useParams();
   const { initialValues, onDelete, onSubmit } = useCustomFormik(id);
+
+  // revisar refactor, no se subio a git
 
   return (
     <Formik
@@ -29,23 +31,6 @@ export function TeamForm() {
                 placeholder="Type team name"
                 cypress="form-name-msg-error"
               />
-              {/* <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
-                Team Name
-                {id ? null : <span className="ml-px text-red-800">*</span>}
-              </label>
-              <Field
-                type="text"
-                name="name"
-                id="name"
-                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                placeholder="Type team name"
-              />
-              <ErrorMessage
-                name="name"
-                component="span"
-                data-cy="form-name-msg-error"
-                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              /> */}
             </div>
             <div className="w-full" data-cy="form-short-name">
               <MyCustomInput
@@ -56,23 +41,6 @@ export function TeamForm() {
                 placeholder="Type short name"
                 cypress="form-short-name-msg-error"
               />
-              {/* <label htmlFor="shortName" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
-                Short name
-                {id ? '' : <span className="ml-px text-red-800">*</span>}
-              </label>
-              <Field
-                type="text"
-                name="shortName"
-                id="shortName"
-                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                placeholder="Type short name"
-              />
-              <ErrorMessage
-                name="shortName"
-                component="span"
-                data-cy="form-short-name-msg-error"
-                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              /> */}
             </div>
             <div className="w-full" data-cy="form-tla">
               <MyCustomInput
@@ -83,23 +51,6 @@ export function TeamForm() {
                 placeholder="AAA"
                 cypress="form-tla-msg-error"
               />
-              {/* <label htmlFor="tla" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
-                TLA
-                {id ? '' : <span className="ml-px text-red-800">*</span>}
-              </label>
-              <Field
-                type="text"
-                name="tla"
-                id="tla"
-                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="AAA"
-              />
-              <ErrorMessage
-                name="tla"
-                component="span"
-                data-cy="form-tla-msg-error"
-                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              /> */}
             </div>
             <div className="w-full" data-cy="form-country">
               <label htmlFor="area.name" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
@@ -135,23 +86,6 @@ export function TeamForm() {
                 placeholder="Type club colors"
                 cypress="form-club-colors-msg-error"
               />
-              {/* <label htmlFor="clubColors" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
-                Club Colors
-                {id ? '' : <span className="ml-px text-red-800">*</span>}
-              </label>
-              <Field
-                type="text"
-                name="clubColors"
-                id="clubColors"
-                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Type club colors"
-              />
-              <ErrorMessage
-                name="clubColors"
-                component="span"
-                data-cy="form-club-colors-msg-error"
-                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              /> */}
             </div>
             <div className="w-full" data-cy="form-venue">
               <MyCustomInput
@@ -161,22 +95,6 @@ export function TeamForm() {
                 placeholder="Type Stadium name"
                 cypress="form-venue-msg-error"
               />
-              {/* <label htmlFor="venue" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
-                Stadium name
-              </label>
-              <Field
-                type="text"
-                name="venue"
-                id="venue"
-                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Type Stadium name"
-              />
-              <ErrorMessage
-                name="venue"
-                component="span"
-                data-cy="form-venue-msg-error"
-                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              /> */}
             </div>
             <div className="w-full" data-cy="form-founded">
               <MyCustomInput
@@ -186,22 +104,6 @@ export function TeamForm() {
                 placeholder="1900"
                 cypress="form-founded-msg-error"
               />
-              {/* <label htmlFor="founded" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
-                Founded
-              </label>
-              <Field
-                type="number"
-                name="founded"
-                id="founded"
-                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                placeholder="1900"
-              />
-              <ErrorMessage
-                name="founded"
-                component="span"
-                data-cy="form-founded-msg-error"
-                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              /> */}
             </div>
             <div className="w-full" data-cy="form-address">
               <MyCustomInput
@@ -211,22 +113,6 @@ export function TeamForm() {
                 placeholder="Type address"
                 cypress="form-address-msg-error"
               />
-              {/* <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
-                Address
-              </label>
-              <Field
-                type="text"
-                id="address"
-                name="address"
-                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Type address"
-              />
-              <ErrorMessage
-                name="address"
-                component="span"
-                data-cy="form-address-msg-error"
-                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              /> */}
             </div>
             <div className="w-full" data-cy="form-phone">
               <MyCustomInput
@@ -236,22 +122,6 @@ export function TeamForm() {
                 placeholder="44 (020) 76195003"
                 cypress="form-phone-msg-error"
               />
-              {/* <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
-                Phone
-              </label>
-              <Field
-                type="tel"
-                id="phone"
-                name="phone"
-                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="44 (020) 76195003"
-              />
-              <ErrorMessage
-                name="phone"
-                component="span"
-                data-cy="form-phone-msg-error"
-                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              /> */}
             </div>
             <div className="w-full" data-cy="form-email">
               <MyCustomInput
@@ -261,22 +131,6 @@ export function TeamForm() {
                 placeholder="teamname@gmail.com"
                 cypress="form-email-msg-error"
               />
-              {/* <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
-                Email
-              </label>
-              <Field
-                type="email"
-                id="email"
-                name="email"
-                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="teamname@gmail.com"
-              />
-              <ErrorMessage
-                name="email"
-                component="span"
-                data-cy="form-email-msg-error"
-                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              /> */}
             </div>
             <div className="w-full" data-cy="form-website">
               <MyCustomInput
@@ -286,22 +140,6 @@ export function TeamForm() {
                 placeholder="www.teamname.com"
                 cypress="form-website-msg-error"
               />
-              {/* <label htmlFor="website" className="block mb-2 text-sm font-medium text-gray-800 dark:text-white">
-                Website
-              </label>
-              <Field
-                type="url"
-                id="website"
-                name="website"
-                className="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="www.teamname.com"
-              />
-              <ErrorMessage
-                name="website"
-                component="span"
-                data-cy="form-website-msg-error"
-                className="ml-3 mt-2 text-xs text-red-600 dark:text-red-500 font-medium"
-              /> */}
             </div>
             <div className="sm:col-span-2" data-cy="form-update-logo">
               <label className="block mb-2 text-sm font-medium text-gray-800 dark:text-white" htmlFor="crestUrl">

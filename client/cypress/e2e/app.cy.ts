@@ -9,7 +9,7 @@ describe('Frontend management', () => {
   });
 
   describe('Navbar', () => {
-    it('should show the navigation bar with its elements', () => {
+    it('should show the navigation bar with its elements on laptop viewport', () => {
       cy.get('[data-cy="navbar-logo-container"]').as('NavLogo');
       cy.get('[data-cy="navbar-search"]').as('NavSearch');
       cy.get('[data-cy="navbar-menu"]').as('NavMenu');
@@ -24,6 +24,30 @@ describe('Frontend management', () => {
       cy.get('@NavMenu').should('exist');
       cy.get('@NavMenuHome').contains('Home');
       cy.get('@NavMenuCreateTeam').contains('Create team');
+    });
+    it('should show the search and menu icons in the mobile viewport', () => {
+      cy.viewport('iphone-8');
+
+      cy.get('[data-cy="nav-btn-search-icon"]').should('exist').as('btnSearch');
+      cy.get('[data-cy="nav-btn-menu-icon"]').should('exist').as('btnOpenMenu');
+
+      cy.get('@btnSearch').click();
+      cy.get('[data-cy="nav-btn-search-icon"]').should('be.visible');
+      cy.get('[data-cy="navbar-menu"]').should('not.be.visible');
+
+      cy.get('[data-cy="navbar-logo-container"]').click();
+      cy.get('[ data-cy="nav-search-mobile"]').should('not.be.visible');
+      cy.get('[data-cy="navbar-menu"]').should('not.be.visible');
+
+      cy.get('@btnOpenMenu').click();
+      cy.get('[data-cy="navbar-menu"]').should('be.visible');
+      cy.get('[data-cy="navbar-menu-home"]').should('be.visible');
+      cy.get('[data-cy="navbar-menu-create-team"]').should('be.visible');
+      cy.get('[ data-cy="nav-search-mobile"]').should('not.be.visible');
+
+      cy.get('[data-cy="navbar-logo-container"]').click();
+      cy.get('[ data-cy="nav-search-mobile"]').should('not.be.visible');
+      cy.get('[data-cy="navbar-menu"]').should('not.be.visible');
     });
   });
 
