@@ -11,7 +11,7 @@ export function DeleteTeam({
   logo: string;
   name: string;
   showModal: () => void;
-}) {
+}): JSX.Element {
   return (
     <>
       {showModal &&

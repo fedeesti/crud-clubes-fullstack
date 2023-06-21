@@ -244,3 +244,20 @@ export const countries = [
     id: 2267,
   },
 ];
+
+export const REQUIRED_FIELDS = ['name', 'shortName', 'tla', 'area[name]', 'clubColors'];
+
+export const INITIAL_VALUES = {
+  name: '',
+  area: { name: '' },
+  shortName: '',
+  tla: '',
+  crestUrl: '',
+  address: '',
+  phone: '',
+  website: '',
+  email: '',
+  founded: null,
+  clubColors: '',
+  venue: '',
+};

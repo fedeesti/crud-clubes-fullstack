@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import logoSvg from '../img/soccer-svgrepo-com.svg';
 
-export function Navbar() {
+export function Navbar(): JSX.Element {
   return (
     <nav className="border-gray-200 bg-gray-900 w-full fixed">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">

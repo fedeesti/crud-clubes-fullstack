@@ -1,6 +1,16 @@
 import { deleteTeamRequest } from '../services/api';
 
-export function Modal({ logo, name, id, onClose }: { logo: string; name: string; id: number; onClose: () => void }) {
+export function Modal({
+  logo,
+  name,
+  id,
+  onClose,
+}: {
+  logo: string;
+  name: string;
+  id: number;
+  onClose: () => void;
+}): JSX.Element {
   const onDelete = (id: number) => {
     deleteTeamRequest(id);
     window.location.reload();

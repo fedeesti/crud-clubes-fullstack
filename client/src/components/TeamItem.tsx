@@ -14,7 +14,7 @@ export function TeamItem({
   country: string;
   name: string;
   shortName: string;
-}) {
+}): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
