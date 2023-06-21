@@ -10,8 +10,6 @@ export function TeamForm() {
   const { id } = useParams();
   const { initialValues, onDelete, onSubmit } = useCustomFormik(id);
 
-  // revisar refactor, no se subio a git
-
   return (
     <Formik
       initialValues={initialValues}

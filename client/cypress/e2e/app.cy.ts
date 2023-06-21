@@ -97,6 +97,7 @@ describe('Frontend management', () => {
       cy.get('[data-cy="team-title"]').as('TeamTitle');
       cy.get('[data-cy="team-section-container"]').as('TeamSectionContainer');
       cy.get('[data-cy="team-data-title"]').as('TeamDataTitle');
+      cy.get('[data-cy="team-address-map"]').as('teamAddressMap');
       cy.get('[data-cy="team-data-container"]').as('TeamDataContainer');
 
       cy.get('@TeamHeader').should('exist');
@@ -107,6 +108,7 @@ describe('Frontend management', () => {
 
       cy.get('@TeamSectionContainer').should('exist');
       cy.get('@TeamDataTitle').contains('Overview');
+      cy.get('@teamAddressMap').should('exist');
       cy.get('@TeamDataContainer').should('exist').children().and('have.length', 9);
     });
     it('should show the team without your data', () => {
@@ -118,6 +120,7 @@ describe('Frontend management', () => {
       cy.get('[data-cy="team-title"]').as('TeamTitle');
       cy.get('[data-cy="team-section-container"]').as('TeamSectionContainer');
       cy.get('[data-cy="team-data-title"]').as('TeamDataTitle');
+      cy.get('[data-cy="team-address-map"]').as('teamAddressMap');
       cy.get('[data-cy="team-data-container"]').as('TeamDataContainer');
 
       cy.get('@TeamHeader').should('exist');
@@ -128,6 +131,7 @@ describe('Frontend management', () => {
 
       cy.get('@TeamSectionContainer').should('exist');
       cy.get('@TeamDataTitle').contains('Overview');
+      cy.get('@teamAddressMap').should('exist');
       cy.get('@TeamDataContainer').should('exist').children().and('have.length', 0);
     });
     it('tests trying to navigate from team page to home page', () => {

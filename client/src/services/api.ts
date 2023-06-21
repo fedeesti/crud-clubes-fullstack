@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { FormValues } from '../types';
 
-const URL_API_BASE: string = 'http://localhost:3000/api/v1/teams';
+const URL_API_BASE: string = import.meta.env.VITE_URL_API_BASE;
 
 export async function getTeamsRequest(): Promise<AxiosResponse> {
   try {
