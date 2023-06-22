@@ -56,34 +56,82 @@ describe('Frontend management', () => {
       cy.title().should('eq', 'CRUD-Clubes');
       cy.get('h1').contains('CRUD-Clubes');
     });
+    describe('Laptop viewport', () => {
+      it('should show the teams table', () => {
+        cy.get('[data-cy="team-table-title"]').should('exist').and('contain', `There are 3 teams`);
 
-    it('should show the teams table', () => {
-      cy.get('[data-cy="team-table-title"]').should('exist').and('contain', `There are 3 teams`);
+        cy.get('[data-cy="teams-table"]').should('exist');
+        cy.get('[data-cy="teams-table-header"]').should('exist');
+        cy.get('[data-cy="teams-table-body"]').should('exist').children().and('have.length', 3);
 
-      cy.get('[data-cy="teams-table"]').should('exist');
-      cy.get('[data-cy="teams-table-header"]').should('exist');
-      cy.get('[data-cy="teams-table-body"]').should('exist').children().and('have.length', 3);
+        cy.get('[data-cy="teams-table-header-name"]').should('exist').and('contain', 'Team name');
+        cy.get('[data-cy="teams-table-header-country"]').should('exist').and('contain', 'Country');
+        cy.get('[data-cy="teams-table-header-actions"]').should('exist').and('contain', 'Actions');
 
-      cy.get('[data-cy="teams-table-header-name"]').should('exist').and('contain', 'Team name');
-      cy.get('[data-cy="teams-table-header-country"]').should('exist').and('contain', 'Country');
-      cy.get('[data-cy="teams-table-header-actions"]').should('exist').and('contain', 'Actions');
+        cy.get('[data-cy="team-row-img"]').should('exist');
+        cy.get('[data-cy="team-row-name"]').should('exist');
+        cy.get('[data-cy="team-row-country"]').should('exist');
+        cy.get('[data-cy="team-row-actions"]').should('be.visible');
+        cy.get('[data-cy="row-actions-mobile-icons"]').should('not.be.visible');
 
-      cy.get('[data-cy="team-row-img"]').should('exist');
-      cy.get('[data-cy="team-row-name"]').should('exist');
-      cy.get('[data-cy="team-row-country"]').should('exist');
-
-      cy.get('[data-cy="team-actions-watch"]').contains('Watch');
-      cy.get('[data-cy="team-actions-edit"]').contains('Edit');
-      cy.get('[data-cy="team-actions-delete"]').contains('Delete');
+        cy.get('[data-cy="team-actions-watch"]').contains('Watch');
+        cy.get('[data-cy="team-actions-edit"]').contains('Edit');
+        cy.get('[data-cy="team-actions-delete"]').contains('Delete');
+      });
     });
-    it('tests trying to navigate from home page to team page', () => {
-      cy.get('[data-cy="team-row-actions"]').as('Actions');
+    describe('Mobile viewport', () => {
+      beforeEach(() => {
+        cy.viewport('iphone-8');
+      });
+      afterEach(() => {
+        cy.viewport('macbook-15');
+      });
+      it('should show the teams table', () => {
+        cy.get('[data-cy="team-table-title"]').should('exist').and('contain', `There are 3 teams`);
 
-      cy.intercept('GET', `${URL_API}/1`, { fixture: 'team-without-data.json' });
-      cy.get('@Actions').find('a').eq(0).click();
+        cy.get('[data-cy="teams-table"]').should('exist');
+        cy.get('[data-cy="teams-table-header"]').should('exist');
+        cy.get('[data-cy="teams-table-body"]').should('exist').children().and('have.length', 3);
 
-      cy.get('[data-cy="team-title"]').as('TeamTitle');
-      cy.get('@TeamTitle').find('h1').should('contain', 'Manchester City FC');
+        cy.get('[data-cy="teams-table-header-name"]').should('exist').and('contain', 'Team name');
+        cy.get('[data-cy="teams-table-header-country"]').should('exist').and('contain', 'Country');
+        cy.get('[data-cy="teams-table-header-actions"]').should('exist').and('contain', 'Actions');
+
+        cy.get('[data-cy="team-row-img"]').should('exist');
+        cy.get('[data-cy="team-row-name"]').should('exist');
+        cy.get('[data-cy="team-row-country"]').should('exist');
+        cy.get('[data-cy="team-row-actions"]').should('not.be.visible');
+        cy.get('[data-cy="row-actions-mobile-icons"]').should('be.visible');
+
+        cy.get('[data-cy="row-actions-mobile-icons-watch"]').should('be.visible');
+        cy.get('[data-cy="row-actions-mobile-icons-edit"]').should('be.visible');
+        cy.get('[data-cy="row-actions-mobile-icons-delete"]').should('be.visible');
+      });
+      it('tests trying to navigate from the home page to the team page', () => {
+        cy.get('[data-cy="row-actions-mobile-icons-watch"]').as('Actions');
+
+        cy.intercept('GET', `${URL_API}/1`, { fixture: 'team-with-data.json' });
+        cy.get('@Actions').eq(0).click();
+
+        cy.get('[data-cy="team-title"]').as('TeamTitle');
+        cy.get('@TeamTitle').find('h1').should('contain', 'Man City');
+      });
+      it('tests trying to navigate from the home page to the edit team page', () => {
+        cy.get('[data-cy="row-actions-mobile-icons-edit"]').as('editActions');
+
+        cy.intercept('GET', `${URL_API}/1`, { fixture: 'team-with-data.json' });
+        cy.intercept('GET', `${URL_API}/1/edit`, { fixture: 'team-without-data.json' });
+        cy.get('@editActions').eq(0).click();
+
+        cy.get('[data-cy="update-team-title"]').as('updateTeamTitle');
+        cy.get('@updateTeamTitle').should('contain', 'Update team');
+      });
+      it('should open the modal with the delete button in the action table', () => {
+        cy.get('[data-cy="row-actions-mobile-icons-delete"]').as('deleteActions');
+
+        cy.get('@deleteActions').eq(0).click();
+        cy.get('[data-cy="modal-container"]').should('be.visible');
+      });
     });
   });
 
@@ -640,7 +688,7 @@ describe('Frontend management', () => {
     describe('UI', () => {
       it('when clicking to Edit should be moved to the Team update page and show the form', () => {
         cy.url().should('include', '/edit');
-        cy.get('[data-cy="add-team-title"]').contains('Update team');
+        cy.get('[data-cy="update-team-title"]').contains('Update team');
         cy.get('[data-cy="team-form-container"]').should('exist').as('formContainer');
 
         cy.get('[data-cy="form-team-name"]').should('exist').as('nameField');

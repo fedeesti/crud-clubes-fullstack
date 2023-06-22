@@ -22,3 +22,15 @@ function App(): JSX.Element {
 }
 
 export default App;
+
+/*
+Corregir los test sobre navegar entre páginas (ya sea por link o navbar)
+  - Se repiten en varios describe, crear uno aparte para testear solamente ese comportamiento
+
+Correr los test y revisar cuáles no pasan
+ - Se debe a cambios de nombres de los data-cy y la semántica de los componentes
+ - Corregirlos para que pasen
+
+Configurar DOTENV en el BACKEND y CYPRESS
+
+*/

@@ -41,7 +41,7 @@ export function WatchTeam(): JSX.Element {
               }&q=${team?.address?.split(' ').join('+')}`}
             ></iframe>
             <div
-              className="pt-4 md:p-6 grid gap-4 grid-cols-2 md:grid-cols-3 grid-rows-auto-fit items-center"
+              className="pt-4 md:p-6 grid gap-4 grid-cols-2 md:grid-cols-3 grid-rows-auto-fit items-center break-words"
               data-cy="team-data-container"
             >
               {team?.shortName && (
