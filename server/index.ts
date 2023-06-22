@@ -1,7 +1,7 @@
 import e from 'express';
 import { createApp } from './app';
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const app: e.Express = createApp();
 
 app.listen(PORT, () => {

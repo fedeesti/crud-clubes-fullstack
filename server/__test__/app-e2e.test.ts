@@ -7,10 +7,12 @@ let app: e.Express;
 let server: Server;
 let api: SuperTest<Test>;
 
+const PORT = process.env.PORT_TEST || 9000;
+
 describe('Teams Service', () => {
   beforeEach(() => {
     app = createApp();
-    server = app.listen(9000);
+    server = app.listen(PORT);
     api = request(app);
   });
 
