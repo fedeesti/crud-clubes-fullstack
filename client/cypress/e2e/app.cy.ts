@@ -144,6 +144,7 @@ describe('Frontend management', () => {
       cy.get('[data-cy="team-data-title"]').as('TeamDataTitle');
       cy.get('[data-cy="team-address-map"]').as('teamAddressMap');
       cy.get('[data-cy="team-data-container"]').as('TeamDataContainer');
+      cy.get('[data-cy="watch-team-btn-edit"]').as('btnEditTeam');
 
       cy.get('@TeamHeader').should('exist');
       cy.get('@TeamHeader').find('img').should('exist').and('have.attr', 'alt', 'logo-Man City');
@@ -155,6 +156,7 @@ describe('Frontend management', () => {
       cy.get('@TeamDataTitle').contains('Overview');
       cy.get('@teamAddressMap').should('exist');
       cy.get('@TeamDataContainer').should('exist').children().and('have.length', 9);
+      cy.get('@btnEditTeam').should('be.visible').contains('Edit team');
     });
     it('should show the team without your data', () => {
       cy.get('[data-cy="team-row-actions"]').as('Actions');
@@ -167,6 +169,7 @@ describe('Frontend management', () => {
       cy.get('[data-cy="team-data-title"]').as('TeamDataTitle');
       cy.get('[data-cy="team-address-map"]').as('teamAddressMap');
       cy.get('[data-cy="team-data-container"]').as('TeamDataContainer');
+      cy.get('[data-cy="watch-team-btn-edit"]').as('btnEditTeam');
 
       cy.get('@TeamHeader').should('exist');
       cy.get('@TeamHeader').find('img').should('exist');
@@ -178,16 +181,38 @@ describe('Frontend management', () => {
       cy.get('@TeamDataTitle').contains('Overview');
       cy.get('@teamAddressMap').should('exist');
       cy.get('@TeamDataContainer').should('exist').children().and('have.length', 0);
+      cy.get('@btnEditTeam').should('be.visible').contains('Edit team');
     });
     it('tests trying to navigate from team page to home page', () => {
+      cy.get('[data-cy="team-actions-watch"]').as('watchTeam');
+      cy.intercept('GET', `${Cypress.env('URL_API')}/1`, { fixture: 'team-without-data.json' }).as('getTeam');
+      cy.get('@watchTeam').eq(0).click();
+
+      cy.url().should('include', '/teams');
+
       cy.get('[data-cy="navbar-logo-container"]').as('NavLogo');
 
       cy.intercept('GET', Cypress.env('URL_API'), { fixture: 'teams.json' });
       cy.get('@NavLogo').click();
 
+      cy.url().should('not.include', '/teams');
       cy.get('h1').contains('CRUD-Clubes');
     });
+    it('tests trying to navigate from the team page to the edit team page', () => {
+      cy.get('[data-cy="team-actions-watch"]').as('watchTeam');
+      cy.intercept('GET', `${Cypress.env('URL_API')}/1`, { fixture: 'team-without-data.json' }).as('getTeam');
+      cy.get('@watchTeam').eq(0).click();
+
+      cy.url().should('include', '/teams');
+      cy.url().should('not.include', '/edit');
+
+      cy.intercept('GET', `${Cypress.env('URL_API')}/5`, { fixture: 'team-with-data.json' }).as('GetTeam');
+      cy.get('[data-cy="watch-team-btn-edit"]').click();
+
+      cy.url().should('include', '/edit');
+    });
   });
+
   describe('Delete Team', () => {
     beforeEach(() => {
       cy.get('[data-cy="team-actions-delete"]').eq(0).click();
@@ -259,6 +284,7 @@ describe('Frontend management', () => {
       cy.get('[data-cy="teams-table-body"]').find('tr').should('have.length', 2);
     });
   });
+
   describe('Add a new team', () => {
     beforeEach(() => {
       cy.get('[data-cy="navbar-menu-create-team"]').click();
@@ -677,6 +703,7 @@ describe('Frontend management', () => {
       });
     });
   });
+
   describe('Update team', () => {
     beforeEach(() => {
       cy.intercept('GET', `${Cypress.env('URL_API')}/1`, { fixture: 'team-with-data.json' }).as('GetTeam');

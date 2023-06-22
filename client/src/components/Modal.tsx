@@ -20,7 +20,7 @@ export function Modal({
     <div
       id="popup-modal"
       onClick={onClose}
-      className="z-50 w-full h-screen absolute top-1/2 left-1/2 translate-x-50-negative translate-y-50-negative"
+      className="fixed flex flex-col items-center justify-center inset-0 bg-black/30 transition-all ease-in-out duration-300"
     >
       <div
         onClick={(e) => e.stopPropagation()}

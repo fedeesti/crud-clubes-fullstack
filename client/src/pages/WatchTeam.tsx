@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import useWindowSize from '../hooks/useWindowSize';
 import useGetTeam from '../hooks/useGetTeam';
 
@@ -29,7 +29,7 @@ export function WatchTeam(): JSX.Element {
               Overview
             </h2>
           </header>
-          <div className="flex flex-col md:flex-row md:gap-8">
+          <section className="flex flex-col md:flex-row md:gap-8">
             <iframe
               className="rounded-lg mx-4 md:my-6 w-11/12 h-60 md:h-80 md:w-98"
               loading="lazy"
@@ -107,7 +107,17 @@ export function WatchTeam(): JSX.Element {
                 </div>
               )}
             </div>
-          </div>
+          </section>
+          <footer className="w-full my-2 h-12">
+            <Link to={`/teams/${team?.id}/edit`}>
+              <button
+                data-cy="watch-team-btn-edit"
+                className="px-5 h-full w-80 text-sm font-bold text-center border border-gold text-gold bg-white rounded-lg hover:text-white hover:bg-gold"
+              >
+                Edit team
+              </button>
+            </Link>
+          </footer>
         </div>
       </section>
     </>
