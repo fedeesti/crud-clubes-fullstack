@@ -1,15 +1,17 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useNavbarExpanded } from '../hooks/useNavbarExpanded';
 import logoSvg from '../img/soccer-svgrepo-com.svg';
+import { useSearchBar } from '../hooks/useSearchBar';
 
 export function Navbar(): JSX.Element {
-  const { isMenuExpanded, isSearchExpanded, toggleMenuExpanded, toggleSearchExpanded, hideNavbarExpanded } =
+  const { isMenuExpanded, isSearchExpanded, toggleMenuExpanded, toggleSearchExpanded, menuRef, searchMobileRef } =
     useNavbarExpanded();
+  const { filteredTeam, keyTeam, handleChange, refSearch, resetFilteredTeam } = useSearchBar();
 
   return (
     <nav className="border-gray-200 bg-gray-900 w-full fixed">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <NavLink to="/" className="flex items-center" data-cy="navbar-logo-container" onClick={hideNavbarExpanded}>
+        <NavLink to="/" className="flex items-center" data-cy="navbar-logo-container">
           <img src={logoSvg} className="h-8 mr-2" alt="CRUD-Clubes Logo" />
           <span className="self-center text-lg md:text-2xl font-semibold whitespace-nowrap text-white">
             CRUD-Clubes
@@ -56,15 +58,37 @@ export function Navbar(): JSX.Element {
             </div>
             <input
               type="text"
-              id="search-navbar"
-              className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              data-cy="nav-search-input"
+              value={keyTeam}
+              ref={refSearch}
+              onChange={handleChange}
+              className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
               placeholder="Search team..."
             />
+            {filteredTeam.length !== 0 && (
+              <div
+                data-cy="search-team-list"
+                className="absolute mt-1 w-full p-2 bg-white shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto"
+              >
+                <ul data-cy="nav-search-list-team">
+                  {filteredTeam.map((team) => {
+                    return (
+                      <li key={team.id} className="cursor-pointer hover:bg-black hover:bg-opacity-10 p-2">
+                        <Link to={`/teams/${team.id}`} onClick={resetFilteredTeam}>
+                          {team.name}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </div>
           <button
             type="button"
             data-cy="nav-btn-menu-icon"
             onClick={toggleMenuExpanded}
+            ref={menuRef}
             className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
           >
             <span className="sr-only">Open menu</span>
@@ -83,11 +107,11 @@ export function Navbar(): JSX.Element {
             </svg>
           </button>
         </div>
-        <div className="items-center justify-between w-full flex md:w-auto md:order-1" onBlur={hideNavbarExpanded}>
+        <div className="flex items-center justify-between w-full md:w-auto md:order-1">
           <div
             data-cy="nav-search-mobile"
-            className={`relative mt-3 ${isSearchExpanded ? 'm-auto' : 'hidden'}`}
-            onBlur={hideNavbarExpanded}
+            ref={searchMobileRef}
+            className={`relative mt-3 ${isSearchExpanded ? 'm-auto' : 'hidden'} md:hidden`}
           >
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
@@ -106,13 +130,33 @@ export function Navbar(): JSX.Element {
             </div>
             <input
               type="text"
-              id="search-navbar"
-              className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              data-cy="nav-search-input-mobile"
+              value={keyTeam}
+              ref={refSearch}
+              onChange={handleChange}
+              className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
               placeholder="Search team..."
             />
+            {filteredTeam.length !== 0 && (
+              <div
+                data-cy="search-team-list-mobile"
+                className="absolute mt-1 w-full p-2 bg-white shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto"
+              >
+                <ul data-cy="nav-search-list-team-mobile">
+                  {filteredTeam.map((team) => {
+                    return (
+                      <li key={team.id} className="cursor-pointer hover:bg-black hover:bg-opacity-10 p-2">
+                        <Link to={`/teams/${team.id}`} onClick={resetFilteredTeam}>
+                          {team.name}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </div>
           <ul
-            onBlur={hideNavbarExpanded}
             className={`${
               isMenuExpanded ? 'w-full' : 'hidden'
             } md:flex flex-col p-4 md:p-0 mt-4 font-medium border rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 bg-gray-900`}
@@ -122,7 +166,6 @@ export function Navbar(): JSX.Element {
               <NavLink
                 to="/"
                 data-cy="navbar-menu-home"
-                onClick={hideNavbarExpanded}
                 className={({ isActive }: { isActive: boolean }): string => {
                   return `block py-2 pl-3 pr-4 text-white rounded hover:bg-gray-800 md:hover:bg-transparent md:hover:text-teal-200 md:p-0 ${
                     isActive ? 'md:text-teal-200' : ''
@@ -136,7 +179,6 @@ export function Navbar(): JSX.Element {
               <NavLink
                 to="/teams/add"
                 data-cy="navbar-menu-create-team"
-                onClick={hideNavbarExpanded}
                 className={({ isActive }: { isActive: boolean }): string => {
                   return `block py-2 pl-3 pr-4 text-white rounded hover:bg-gray-800 md:hover:bg-transparent md:hover:text-teal-200 md:p-0 ${
                     isActive ? 'md:text-teal-200' : ''

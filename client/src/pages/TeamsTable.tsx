@@ -1,6 +1,7 @@
-import { Team } from '../types';
+import { Link } from 'react-router-dom';
 import { useGetTeams } from '../hooks/useGetTeams';
 import { TeamItem } from '../components/TeamItem';
+import { Team } from '../types';
 
 export function TeamsTable(): JSX.Element {
   const { teams }: { teams: Team[] } = useGetTeams();
@@ -11,9 +12,14 @@ export function TeamsTable(): JSX.Element {
         <h1 className="text-gray-800 text-5xl font-black">CRUD-Clubes</h1>
       </header>
       <section className="flex flex-col items-center justify-center min-h-screen py-10">
-        <span data-test="amount-of-teams" className="text-gray-950 font-medium" data-cy="team-table-title">
+        <p data-test="amount-of-teams" className="text-gray-950 font-medium" data-cy="team-table-title">
           There are {teams.length} teams
-        </span>
+          <span className="px-2 py-0.5 ml-1 bg-gold rounded text-white hover:bg-gold/80">
+            <Link data-cy="home-btn-add-team" to="/teams/add">
+              ADD
+            </Link>
+          </span>
+        </p>
         <div className="flex flex-col mt-6 w-min">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
