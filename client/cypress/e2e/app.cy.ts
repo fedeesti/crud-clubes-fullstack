@@ -1255,13 +1255,3 @@ describe('Frontend management', () => {
     });
   });
 });
-
-/*
-  TESTEAR NAVBAR
-
-- Al hacer click en el search no debería mostrar las sugerencias
-- Al tipear un equipo en el search debería mostrar los equipos sugeridos
-- Al tipear un equipo en el search y hacer click fuera del search debería cerrar las sugerencias
-
-- Al tipear un equipo en el search y coincidir con el sugerido, debería hacer click en el equipo e ir a visualizarlo
-*/
