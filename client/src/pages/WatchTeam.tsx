@@ -41,7 +41,7 @@ export function WatchTeam(): JSX.Element {
               }&q=${team?.address?.split(' ').join('+')}`}
             ></iframe>
             <div
-              className="pt-4 md:p-6 grid gap-4 grid-cols-2 md:grid-cols-3 grid-rows-auto-fit items-center break-words"
+              className="pt-2 md:pt-4 md:p-6 grid gap-4 grid-cols-2 md:grid-cols-3 grid-rows-auto-fit items-center break-words"
               data-cy="team-data-container"
             >
               {team?.shortName && (
@@ -112,7 +112,7 @@ export function WatchTeam(): JSX.Element {
             <Link to={`/teams/${team?.id}/edit`}>
               <button
                 data-cy="watch-team-btn-edit"
-                className="px-5 h-full w-80 text-sm font-bold text-center border border-gold text-gold bg-white rounded-lg hover:text-white hover:bg-gold"
+                className="px-5 h-full w-full md:w-80 text-sm font-bold text-center border border-gold text-gold bg-white rounded-lg hover:text-white hover:bg-gold"
               >
                 Edit team
               </button>

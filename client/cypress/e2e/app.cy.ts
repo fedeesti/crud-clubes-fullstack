@@ -6,45 +6,121 @@ describe('Frontend management', () => {
   });
 
   describe('Navbar', () => {
-    it('should show the navigation bar with its elements on laptop viewport', () => {
-      cy.get('[data-cy="navbar-logo-container"]').as('NavLogo');
-      cy.get('[data-cy="navbar-search"]').as('NavSearch');
-      cy.get('[data-cy="navbar-menu"]').as('NavMenu');
-      cy.get('[data-cy="navbar-menu-home"]').as('NavMenuHome');
-      cy.get('[data-cy="navbar-menu-create-team"]').as('NavMenuCreateTeam');
+    describe('Deskptop viewport', () => {
+      it('should show the navigation bar with its elements on laptop viewport', () => {
+        cy.get('[data-cy="navbar-logo-container"]').as('NavLogo');
+        cy.get('[data-cy="navbar-search"]').as('NavSearch');
+        cy.get('[data-cy="navbar-menu"]').as('NavMenu');
+        cy.get('[data-cy="navbar-menu-home"]').as('NavMenuHome');
+        cy.get('[data-cy="navbar-menu-create-team"]').as('NavMenuCreateTeam');
 
-      cy.get('@NavLogo').find('img').should('exist');
-      cy.get('@NavLogo').find('span').contains('CRUD-Clubes');
+        cy.get('@NavLogo').find('img').should('exist');
+        cy.get('@NavLogo').find('span').contains('CRUD-Clubes');
 
-      cy.get('@NavSearch').should('exist');
+        cy.get('@NavSearch').should('exist');
 
-      cy.get('@NavMenu').should('exist');
-      cy.get('@NavMenuHome').contains('Home');
-      cy.get('@NavMenuCreateTeam').contains('Create team');
+        cy.get('@NavMenu').should('exist');
+        cy.get('@NavMenuHome').contains('Home');
+        cy.get('@NavMenuCreateTeam').contains('Create team');
+      });
+      it('when clicking on the search it should not show the suggestions', () => {
+        cy.get('[data-cy="navbar-search"]').click();
+
+        cy.get('[data-cy="search-team-list"]').should('not.exist');
+      });
+      it('when typing a team in the search it should show the suggested teams', () => {
+        cy.get('[data-cy="nav-search-input"]').click();
+        cy.get('[data-cy="nav-search-input"]').type('chel').should('have.value', 'chel');
+
+        cy.get('[data-cy="search-team-list"]').should('be.visible');
+      });
+      it('typing a team into the search and clicking outside of the search should close the suggestions', () => {
+        cy.get('[data-cy="nav-search-input"]').click();
+
+        cy.get('[data-cy="nav-search-input"]').type('chel').should('have.value', 'chel');
+        cy.get('[data-cy="search-team-list"]').should('be.visible');
+
+        cy.get('[data-cy="navbar-logo-container"]').click();
+
+        cy.get('[data-cy="search-team-list"]').should('not.exist');
+        cy.get('[data-cy="nav-search-input"]').invoke('attr', 'placeholder').should('contain', 'Search team...');
+      });
+      it('by typing a team in the search and matching the suggested one, you should click on the team and go to view it', () => {
+        cy.get('[data-cy="nav-search-input"]').click();
+        cy.get('[data-cy="nav-search-input"]').type('chel').should('have.value', 'chel');
+        cy.url().should('not.include', '/teams');
+
+        cy.intercept('GET', `${Cypress.env('URL_API')}/3`, { fixture: 'team-without-data.json' }).as('getTeam');
+        cy.get('[data-cy="nav-search-list-team"]').find('li > a').eq(0).click();
+
+        cy.url().should('include', '/teams');
+        cy.get('[data-cy="search-team-list"]').should('not.exist');
+      });
     });
-    it('should show the search and menu icons in the mobile viewport', () => {
-      cy.viewport('iphone-8');
 
-      cy.get('[data-cy="nav-btn-search-icon"]').should('exist').as('btnSearch');
-      cy.get('[data-cy="nav-btn-menu-icon"]').should('exist').as('btnOpenMenu');
+    describe('Mobile viewport', () => {
+      beforeEach(() => {
+        cy.viewport('iphone-8');
+      });
+      afterEach(() => {
+        cy.viewport('macbook-15');
+      });
+      it('should show the search and menu icons in the mobile viewport', () => {
+        cy.get('[data-cy="nav-btn-search-icon"]').should('exist').as('btnSearch');
+        cy.get('[data-cy="nav-btn-menu-icon"]').should('exist').as('btnOpenMenu');
 
-      cy.get('@btnSearch').click();
-      cy.get('[data-cy="nav-btn-search-icon"]').should('be.visible');
-      cy.get('[data-cy="navbar-menu"]').should('not.be.visible');
+        cy.get('@btnSearch').click();
+        cy.get('[data-cy="nav-btn-search-icon"]').should('be.visible');
+        cy.get('[data-cy="navbar-menu"]').should('not.be.visible');
 
-      cy.get('[data-cy="navbar-logo-container"]').click();
-      cy.get('[ data-cy="nav-search-mobile"]').should('not.be.visible');
-      cy.get('[data-cy="navbar-menu"]').should('not.be.visible');
+        cy.get('[data-cy="navbar-logo-container"]').click();
+        cy.get('[ data-cy="nav-search-mobile"]').should('not.be.visible');
+        cy.get('[data-cy="navbar-menu"]').should('not.be.visible');
 
-      cy.get('@btnOpenMenu').click();
-      cy.get('[data-cy="navbar-menu"]').should('be.visible');
-      cy.get('[data-cy="navbar-menu-home"]').should('be.visible');
-      cy.get('[data-cy="navbar-menu-create-team"]').should('be.visible');
-      cy.get('[ data-cy="nav-search-mobile"]').should('not.be.visible');
+        cy.get('@btnOpenMenu').click();
+        cy.get('[data-cy="navbar-menu"]').should('be.visible');
+        cy.get('[data-cy="navbar-menu-home"]').should('be.visible');
+        cy.get('[data-cy="navbar-menu-create-team"]').should('be.visible');
+        cy.get('[ data-cy="nav-search-mobile"]').should('not.be.visible');
 
-      cy.get('[data-cy="navbar-logo-container"]').click();
-      cy.get('[ data-cy="nav-search-mobile"]').should('not.be.visible');
-      cy.get('[data-cy="navbar-menu"]').should('not.be.visible');
+        cy.get('[data-cy="navbar-logo-container"]').click();
+        cy.get('[ data-cy="nav-search-mobile"]').should('not.be.visible');
+        cy.get('[data-cy="navbar-menu"]').should('not.be.visible');
+      });
+      it('when clicking on the search it should not show the suggestions', () => {
+        cy.get('[data-cy="nav-btn-search-icon"]').click();
+
+        cy.get('[data-cy="search-team-list"]').should('not.exist');
+      });
+      it('when typing a team in the search it should show the suggested teams', () => {
+        cy.get('[data-cy="nav-btn-search-icon"]').click();
+
+        cy.get('[data-cy="nav-search-input-mobile"]').type('chel').should('have.value', 'chel');
+        cy.get('[data-cy="search-team-list-mobile"]').should('be.visible');
+      });
+      it('typing a team into the search and clicking outside of the search should close the suggestions', () => {
+        cy.get('[data-cy="nav-btn-search-icon"]').click();
+
+        cy.get('[data-cy="nav-search-input-mobile"]').type('chel').should('have.value', 'chel');
+        cy.get('[data-cy="search-team-list-mobile"]').should('be.visible');
+
+        cy.get('[data-cy="navbar-logo-container"]').click();
+
+        cy.get('[data-cy="search-team-list-mobile"]').should('not.exist');
+        cy.get('[data-cy="nav-search-input-mobile"]').invoke('attr', 'placeholder').should('contain', 'Search team...');
+      });
+      it('by typing a team in the search and matching the suggested one, you should click on the team and go to view it', () => {
+        cy.get('[data-cy="nav-btn-search-icon"]').click();
+
+        cy.get('[data-cy="nav-search-input-mobile"]').type('chel').should('have.value', 'chel');
+        cy.url().should('not.include', '/teams');
+
+        cy.intercept('GET', `${Cypress.env('URL_API')}/3`, { fixture: 'team-without-data.json' }).as('getTeam');
+        cy.get('[data-cy="search-team-list-mobile"]').find('li > a').eq(0).click();
+
+        cy.url().should('include', '/teams');
+        cy.get('[data-cy="search-team-list-mobile"]').should('not.exist');
+      });
     });
   });
 
@@ -56,6 +132,7 @@ describe('Frontend management', () => {
     describe('Laptop viewport', () => {
       it('should show the teams table', () => {
         cy.get('[data-cy="team-table-title"]').should('exist').and('contain', `There are 3 teams`);
+        cy.get('[data-cy="home-btn-add-team"]').should('be.visible').and('contain', 'ADD');
 
         cy.get('[data-cy="teams-table"]').should('exist');
         cy.get('[data-cy="teams-table-header"]').should('exist');
@@ -75,7 +152,15 @@ describe('Frontend management', () => {
         cy.get('[data-cy="team-actions-edit"]').contains('Edit');
         cy.get('[data-cy="team-actions-delete"]').contains('Delete');
       });
+      it('tests trying to navigate from the home page to the create team page', () => {
+        cy.get('h1').contains('CRUD-Clubes');
+
+        cy.get('[data-cy="home-btn-add-team"]').click();
+
+        cy.url().should('include', '/teams/add');
+      });
     });
+
     describe('Mobile viewport', () => {
       beforeEach(() => {
         cy.viewport('iphone-8');
@@ -85,6 +170,7 @@ describe('Frontend management', () => {
       });
       it('should show the teams table', () => {
         cy.get('[data-cy="team-table-title"]').should('exist').and('contain', `There are 3 teams`);
+        cy.get('[data-cy="home-btn-add-team"]').should('be.visible').and('contain', 'ADD');
 
         cy.get('[data-cy="teams-table"]').should('exist');
         cy.get('[data-cy="teams-table-header"]').should('exist');
@@ -1169,3 +1255,13 @@ describe('Frontend management', () => {
     });
   });
 });
+
+/*
+  TESTEAR NAVBAR
+
+- Al hacer click en el search no debería mostrar las sugerencias
+- Al tipear un equipo en el search debería mostrar los equipos sugeridos
+- Al tipear un equipo en el search y hacer click fuera del search debería cerrar las sugerencias
+
+- Al tipear un equipo en el search y coincidir con el sugerido, debería hacer click en el equipo e ir a visualizarlo
+*/

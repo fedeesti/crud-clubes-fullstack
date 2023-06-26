@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function useNavbarExpanded() {
   const [isMenuExpanded, setIsMenuExpanded] = useState<boolean>(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState<boolean>(false);
+
+  const menuRef: React.RefObject<any> = useRef();
+  const searchMobileRef: React.RefObject<any> = useRef();
 
   const toggleMenuExpanded = () => {
     setIsMenuExpanded(!isMenuExpanded);
@@ -10,14 +13,26 @@ export function useNavbarExpanded() {
   };
 
   const toggleSearchExpanded = () => {
-    setIsMenuExpanded(false);
     setIsSearchExpanded(!isSearchExpanded);
   };
 
-  const hideNavbarExpanded = () => {
-    setIsMenuExpanded(false);
-    setIsSearchExpanded(false);
+  const hideNavbarExpanded = (e: MouseEvent) => {
+    if (!menuRef.current?.contains(e.target as Node)) {
+      setIsMenuExpanded(false);
+    }
+
+    if (!searchMobileRef.current?.contains(e.target as Node)) {
+      setIsSearchExpanded(false);
+    }
   };
 
-  return { isMenuExpanded, isSearchExpanded, toggleMenuExpanded, toggleSearchExpanded, hideNavbarExpanded };
+  useEffect(() => {
+    document.addEventListener('mousedown', hideNavbarExpanded);
+
+    return () => {
+      document.removeEventListener('mousedown', hideNavbarExpanded);
+    };
+  });
+
+  return { isMenuExpanded, isSearchExpanded, toggleMenuExpanded, toggleSearchExpanded, menuRef, searchMobileRef };
 }
