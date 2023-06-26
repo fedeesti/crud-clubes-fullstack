@@ -10,7 +10,8 @@ export function WatchTeam(): JSX.Element {
   return (
     <>
       <header
-        className="bg-banner-team bg-bottom min-w-full pt-24 pb-8 grid grid-cols-sm-minmax md:grid-cols-md-minmax gap-1 md:gap-5"
+        id="header-team-page"
+        className="bg-center bg-cover bg-no-repeat min-w-full pt-24 pb-8 grid grid-cols-sm-minmax md:grid-cols-md-minmax gap-1 md:gap-5"
         data-cy="team-header"
       >
         <img src={team?.crestUrl} alt={`logo-${team?.shortName}`} className="ml-2 md:ml-4 w-32 h-32 md:w-52 md:h-52" />
