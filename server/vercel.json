@@ -9,10 +9,12 @@
   "routes": [
     {
       "src": "/api/v1/teams",
+      "method": ["GET", "POST"],
       "dest": "index.ts"
     },
     {
       "src": "/api/v1/teams/:id",
+      "method": ["GET", "PUT", "DELETE"],
       "dest": "index.ts"
     }
   ]
