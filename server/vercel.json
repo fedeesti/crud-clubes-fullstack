@@ -13,7 +13,7 @@
       "dest": "index.ts"
     },
     {
-      "src": "/api/v1/teams/:id",
+      "src": "/api/v1/teams/(.*)",
       "methods": ["GET", "PUT", "DELETE"],
       "dest": "index.ts"
     }
